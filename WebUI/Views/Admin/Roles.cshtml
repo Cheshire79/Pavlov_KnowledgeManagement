@@ -1,0 +1,92 @@
+﻿@using WebUI.HtmlHelpers
+@model WebUI.Models.UsersListForRolesViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="navbar-header">
+        @Html.ActionLink("Users", "Users", "Admin", null, new { @class = "navbar-brand" })
+        @Html.ActionLink("Roles", "Roles", "Admin", null, new { @class = "navbar-brand" })
+    </div>
+</div>
+
+<div>
+    @if (TempData["message"] != null)
+    {
+        <div class="Message">@TempData["message"]</div>
+    }
+
+    <div id="headerRoles">
+        <div class="title">Roles STORE</div>
+    </div>
+    <div id="categoriesRoles">
+        @{ Html.RenderAction("RolesMenu", "Admin", new { roleId = Model.CurrentRoleId }); }
+        
+
+    </div>
+    <div id="contentRoles">
+        <p>
+            @if (Model.CurrentRoleId != null)
+            {
+                <a>
+                    @Html.ActionLink("Add User to role", "AddUsersForRole", new { roleId = Model.CurrentRoleId, returnUrl = Request.Url.PathAndQuery })
+                </a>
+            }
+        </p>
+        <table class="table">
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+
+            @foreach (var item in Model.UserViewModels)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Delete", "DeleteTrst", new { /* id=item.PrimaryKey */ })*@
+                        <!--  Html.ActionLink("Delete", "Delete", new { id = item.Id })*/  -->
+                    </td>
+                    @if (Model.CurrentRoleId != null)
+                    {
+                        <td>
+                            @using (Html.BeginForm("RemoveUserFromRole", "Admin", FormMethod.Post, new { onclick = "return confirm('Are sure wants to remove from role?');" }))
+                            {
+                                @Html.Hidden("roleId", Model.CurrentRoleId)
+                                @Html.Hidden("userId", item.Id)
+                                @Html.Hidden("returnUrl", Request.Url.PathAndQuery)
+                                <input type="submit" value="Remove" />
+                            }
+                        </td>
+                    }
+
+
+                </tr>
+            }
+
+        </table>
+
+
+
+        <div class="pager">
+            @Html.PageLinks(Model.PagingInfo, x => Url.Action("Roles",
+                 new { page = x, roleId = Model.CurrentRoleId }))
+        </div>
+    </div>
+
+
+
+
+
+
+</div>

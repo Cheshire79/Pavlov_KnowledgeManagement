@@ -1,0 +1,77 @@
+﻿
+
+@using WebUI.Models.SearchForUsers
+@model WebUI.Models.SearchForUsers.SpecifyingSkillsForSearchViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/ManagerSkill/_LayoutManagerSkill.cshtml";
+}
+
+
+
+
+@using (Html.BeginForm())
+{
+    List<SpecifyingSkillForSearchSaveModel> specifyingSkillsForSearchSaveModel = new List<SpecifyingSkillForSearchSaveModel>();
+   
+
+    <div class="manager-search-skill">
+        <div class="title"> Specify search criteria</div>
+        <div class="form-horizontal">
+
+            @{ int index = -1; }
+            @foreach (var specifyingSkill in Model.SpecifyingSkills)           
+            {              
+                if (specifyingSkill.SubSkillListViewModel.Any())
+                {
+                    <div class="subtitle">
+                        @Html.DisplayFor(model => specifyingSkill.SkillViewModel.Name, new {@class = "SkillTitle"})
+                    </div>
+                    <div class="skill-scope">
+                        @{                            
+                            foreach (var subSkill in specifyingSkill.SubSkillListViewModel)
+                            {
+                                specifyingSkillsForSearchSaveModel.Add(new SpecifyingSkillForSearchSaveModel());                            
+                                index++;                                
+                                specifyingSkillsForSearchSaveModel[index].SubSkillId = subSkill.SubSkillViewModel.Id;
+                                int levelId = subSkill.LevelId;
+                                var selected = Model.LevelsViewModel.FirstOrDefault(x => x.Id == levelId);
+                                SelectList levels = new SelectList(Model.LevelsViewModel, "Id", "Name", selected);
+
+                                <span class="skill-title">
+
+                                    @Html.DisplayFor(model => subSkill.SubSkillViewModel.Name)
+                                </span>
+                                <div class="skill-Rating">
+                                    has level 
+                                    <!--Html.DisplayFor(model => subSkill.SubSkillViewModel.Id)-->                   
+                                    @Html.HiddenFor(model => specifyingSkillsForSearchSaveModel[index].SubSkillId)
+                                    @Html.DropDownListFor(x => specifyingSkillsForSearchSaveModel[index].LevelId, levels as SelectList)
+                                    <span>,   accept if higher</span>
+                                    @Html.CheckBoxFor(m => specifyingSkillsForSearchSaveModel[index].OrHigher, false)</div>
+                            }
+                        }
+                    
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Search" class="btn btn-default" />
+        </div>
+    </div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+
+
+
+

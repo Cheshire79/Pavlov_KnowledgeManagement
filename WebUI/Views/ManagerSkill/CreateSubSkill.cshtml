@@ -1,0 +1,41 @@
+﻿@model WebUI.Models.KnowledgeManagement.SubSkillViewModel
+
+@{
+    Layout = "~/Views/ManagerSkill/_LayoutManagerSkill.cshtml";
+    ViewBag.Title = "CreateSubSkill";
+}
+
+<div class="headerSkills">Create subSkill </div>
+
+
+    @using (Html.BeginForm())
+    {
+
+        <div class="form-horizontal">
+
+            @Html.ValidationSummary()
+            <hr />
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.Name, new { @class = "input-skill-name" })
+                    <!--Html.ValidationMessageFor(model => model.Name)-->
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create subSkill" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+
+    <div>
+        <!--Html.ActionLink("Back to List", "EditSubSkills", new { Model.SkillId })-->
+        <a href=@Model.ReturnUrl>Back to skills list</a>
+
+    </div>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }

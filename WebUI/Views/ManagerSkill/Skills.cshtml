@@ -1,0 +1,54 @@
+﻿@model IEnumerable<WebUI.Models.KnowledgeManagement.SkillViewModel>
+
+@{
+    Layout = "~/Views/ManagerSkill/_LayoutManagerSkill.cshtml";
+    ViewBag.Title = "Skills";
+}
+
+
+    <div class="headerSkills">Skills List</div>
+
+
+    @if (TempData["message"] != null)
+    {
+        <div class="Message">@TempData["message"]</div>
+    }
+    <p class="createTitle">       
+        @Html.ActionLink("Create New", "CreateSkill", new { ReturnUrl = Request.Url.PathAndQuery })
+    </p>
+
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditSkill", new { id = item.Id, ReturnUrl = Request.Url.PathAndQuery })
+                </td>
+                <td>                    
+                        @Html.ActionLink("Edit subSkills", "EditSubSkills", new { skillId = item.Id, ReturnUrl = Request.Url.PathAndQuery })                    
+                </td>
+                <td>
+                    @using (Html.BeginForm("DeleteSkill", "ManagerSkill", FormMethod.Post, new { onclick = "return confirm('Are sure wants to delete ?');" }))
+                    {
+                        @Html.Hidden("Id", item.Id)
+                        @Html.Hidden("returnUrl", Request.Url.PathAndQuery)
+                        <input type="submit" value="Delete" />
+                    }
+                </td>
+
+            </tr>
+        }
+
+    </table>

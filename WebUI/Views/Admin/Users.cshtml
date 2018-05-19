@@ -1,0 +1,60 @@
+﻿@using WebUI.HtmlHelpers
+@model WebUI.Models.UsersListViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="navbar-header">
+        @Html.ActionLink("Users", "Users", "Admin", null, new { @class = "navbar-brand" })
+        @Html.ActionLink("Roles", "Roles", "Admin", null, new { @class = "navbar-brand" })
+    </div>
+</div>
+
+<div>
+    @if (TempData["message"] != null)
+    {
+        <div class="Message">@TempData["message"]</div>
+    }
+
+    <table class="table">
+        <tr>
+            <td>
+                <!--            Html.DisplayNameFor(x => x.UserViewModels =>)-->
+                Name
+            </td>
+            <td></td>
+            <td></td>
+        </tr>
+
+        @foreach (var item in Model.UserViewModels)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
+                    <!--  Html.ActionLink("Delete", "Delete", new { id = item.Id })*/  -->
+                </td>
+                <td>
+                    @using (Html.BeginForm("DeleteUser", "Admin", FormMethod.Post, new { onclick = "return confirm('Are sure wants to delete ?');" }))
+                    {
+                        @Html.Hidden("Id", item.Id)
+                        @Html.Hidden("returnUrl", Request.Url.PathAndQuery)
+                        <input type="submit" value="Delete" />
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+
+    <div class="pager">
+        @Html.PageLinks(Model.PagingInfo, x => Url.Action("Users",
+        new { page = x }))
+    </div>
+</div>

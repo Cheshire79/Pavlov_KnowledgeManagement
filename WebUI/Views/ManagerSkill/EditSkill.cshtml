@@ -1,0 +1,46 @@
+﻿@using WebUI.HtmlHelpers
+@model WebUI.Models.KnowledgeManagement.SkillViewModel
+
+@{
+    Layout = "~/Views/ManagerSkill/_LayoutManagerSkill.cshtml";
+    ViewBag.Title = "EditSkill";
+}
+
+<div class="headerSkills">Edit skill</div>
+
+
+
+    @using (Html.BeginForm())
+    {
+
+        <div class="form-horizontal">
+            @Html.ValidationSummary()
+            <hr />
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.Name, new { @class = "input-skill-name" })
+                    <!--Html.ValidationMessageFor(model => model.Name)-->
+                </div>
+            </div>
+
+            @Html.HiddenFor(model => model.Id)
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+
+    <div>
+        <!--Html.ActionLink("Back to skills list", Model.ReturnUrl)-->
+        <a href=@Model.ReturnUrl>Back to skills list</a>
+
+
+    </div>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+

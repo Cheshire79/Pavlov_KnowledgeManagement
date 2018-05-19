@@ -1,0 +1,55 @@
+﻿@model WebUI.Models.KnowledgeManagement.SubSkillListViewModel
+
+@{
+    Layout = "~/Views/ManagerSkill/_LayoutManagerSkill.cshtml";
+    ViewBag.Title = "EditSubSkills";
+}
+
+
+
+
+<div class="headerSkills">Edit subSkills for @Model.SkillViewModel.Name Group</div>
+
+
+    <p class="createTitle">
+    @Html.ActionLink("Create New", "CreateSubSkill", new { skillId = Model.SkillViewModel.Id })
+</p>
+    <table class="table">
+        <tr>
+            <td>
+                Name
+            </td>
+            <td></td>
+            <td></td>
+</tr>
+
+        @foreach (var item in Model.SubSkillsViewModel)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+
+                <td>
+                    @Html.ActionLink("Edit", "EditSubSkill", new { subSkillid = item.Id, returnUrl = Request.Url.PathAndQuery })
+                </td>
+                <td>
+                    @using (Html.BeginForm("DeleteSubSkill", "ManagerSkill", FormMethod.Post, new { onclick = "return confirm('Are sure wants to delete ?');" }))
+                    {
+                        @Html.Hidden("subSkillid", item.Id)
+                        @Html.Hidden("returnUrl", Request.UrlReferrer)
+                        <input type="submit" value="Delete" />
+                    }
+                </td>
+            </tr>
+        }
+
+    </table>
+    <div>
+
+        <!--Html.ActionLink("Back to skills list", "Skills")-->
+        <a href=@Model.ReturnUrl>Back to skills list</a>
+    </div>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }

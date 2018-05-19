@@ -1,0 +1,19 @@
+﻿@{    
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="navbar-header">
+        @Html.ActionLink("Edit skills", "Skills", "ManagerSkill", null, new { @class = "navbar-brand" })
+        @Html.ActionLink("Search user", "Index", "SearchForUsers", null, new { @class = "navbar-brand" })
+    </div>
+</div>
+
+    <body>
+        <div>
+            @RenderBody()
+        </div>
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")
+        @RenderSection("scripts", required: false)
+</body>

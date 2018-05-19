@@ -1,0 +1,355 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 150px;
+}
+
+/* styles for validation helpers */
+.field-validation-error {
+    color: #b94a48;
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+input.input-validation-error {
+    border: 1px solid #b94a48;
+}
+
+input[type="checkbox"].input-validation-error {
+    border: 0 none;
+}
+
+.validation-summary-errors {
+    color: #b94a48;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+/*----------------------*/
+DIV#headerRoles DIV.title, DIV.item H3, DIV.item H4, DIV.pager A {
+    font: bold 1em "Arial Narrow", "Franklin Gothic Medium", Arial;
+}
+
+DIV#headerRoles {
+    background-color: #444;
+    border-bottom: 2px solid #111;
+    color: White;
+}
+
+    DIV#headerRoles DIV.title {
+        font-size: 2em;
+        padding: .6em;
+    }
+
+DIV#contentRoles {
+    border-left: 2px solid gray;
+    margin-left: 9em;
+    padding: 1em;
+}
+
+DIV#categoriesRoles {
+    float: left;
+    width: 8em;
+    padding: .3em;
+}
+
+DIV.item {
+    border-top: 1px dotted gray;
+    padding-top: .7em;
+    margin-bottom: .7em;
+}
+
+    DIV.item:first-child {
+        border-top: none;
+        padding-top: 0;
+    }
+
+    DIV.item H3 {
+        font-size: 1.3em;
+        margin: 0 0 .25em 0;
+    }
+
+    DIV.item H4 {
+        font-size: 1.1em;
+        margin: .4em 0 0 0;
+    }
+
+DIV.pager {
+    text-align: right;
+    border-top: 2px solid silver;
+    padding: .5em 0 0 0;
+    margin-top: 1em;
+}
+
+    DIV.pager A {
+        font-size: 1.1em;
+        color: #666;
+        text-decoration: none;
+        padding: 0 .4em 0 .4em;
+    }
+
+        DIV.pager A:hover {
+            background-color: Silver;
+        }
+
+        DIV.pager A.selected {
+            background-color: #353535;
+            color: White;
+        }
+
+DIV#categoriesRoles a {
+    font: bold 1.1em "Arial Narrow","Franklin Gothic Medium",Arial;
+    display: block;
+    text-decoration: none;
+    padding: .6em;
+    color: Black;
+    border-bottom: 1px solid silver;
+}
+
+    DIV#categoriesRoles a.selected {
+        background-color: #666;
+        color: White;
+    }
+
+    DIV#categoriesRoles a:hover {
+        background-color: #CCC;
+    }
+
+    DIV#categoriesRoles a.selected:hover {
+        background-color: #666;
+    }
+
+/*----------------------*/
+
+
+/*---------------------- manager*/
+
+
+.createTitle {
+    margin-top: 10px;
+}
+
+
+
+/* */
+.headerSkills {
+    font-weight: bold;
+    font-family: 'Oswald Regular',Tahoma,sans-serif;
+    letter-spacing: .5px;
+    color: #464547;
+    font-size: 24px;
+    padding-top: 15px;
+    padding-bottom: 10px;
+    padding-left: 25px;
+    background-color: #dddddd;
+}
+
+
+.manager-search-skill {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+    .manager-search-skill .title {
+        font-weight: bold;
+        font-family: 'Oswald Regular',Tahoma,sans-serif;
+        letter-spacing: .5px;
+        color: #464547;
+        font-size: 24px;
+        padding-top: 15px;
+        padding-bottom: 10px;
+        padding-left: 25px;
+        background-color: #dddddd;
+    }
+
+    .manager-search-skill .skill-scope {
+        border-bottom: 1px solid #464547;
+        border-top: 1px solid #464547;
+        padding-top: 1em;
+        padding-bottom: 1em;
+    }
+
+    .manager-search-skill .subtitle {
+        font-weight: bold;
+        font-family: 'Oswald Regular',Tahoma,sans-serif;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        color: #464547;
+        font-size: 24px;
+        margin-top: 15px;
+        margin-bottom: 10px;
+        margin-left: 25px;
+        text-transform: none;
+    }
+
+    .manager-search-skill .skill-scope .skill-title {
+        float: left;
+        /* font:  1.1em "Arial Narrow","Franklin Gothic Medium",Arial;*/
+        font: 1.1em 'Source Sans Pro Regular',Tahoma,sans-serif;
+        color: #464547;
+    }
+
+    .manager-search-skill .skill-scope .skill-Rating {
+        margin-left: 68.5%;
+        padding: 0.1em;
+    }
+
+
+
+
+
+/*---------------------- user*/
+.input-skill-name {
+    max-width: 750px;
+    width: 700px;
+}
+
+
+
+.user-specifying-skill {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+    .user-specifying-skill .title {
+        font-weight: bold;
+        font-family: 'Oswald Regular',Tahoma,sans-serif;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        color: #464547;
+        font-size: 24px;
+        padding-top: 15px;
+        padding-bottom: 10px;
+        padding-left: 25px;
+        background-color: #dddddd;
+    }
+
+    .user-specifying-skill .skill-scope {
+        border: 1px solid #464547;
+        padding-top: 1em;
+        padding-bottom: 1em;
+    }
+
+    .user-specifying-skill .subtitle {
+        font-weight: bold;
+        font-family: 'Oswald Regular',Tahoma,sans-serif;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        color: #464547;
+        font-size: 24px;
+        margin-top: 15px;
+        margin-bottom: 10px;
+        margin-left: 25px;
+        text-transform: none;
+    }
+
+    .user-specifying-skill .skill-scope .skill-title {
+        float: left;
+        /* font:  1.1em "Arial Narrow","Franklin Gothic Medium",Arial;*/
+        font: 1.1em 'Source Sans Pro Regular',Tahoma,sans-serif;
+        color: #464547;
+    }
+
+    .user-specifying-skill .skill-scope .skill-Rating {
+        margin-left: 68.5%;
+        padding: 0.1em;
+    }
+
+.user-search-result .title {
+    text-align: center;
+    font-size: 24px;
+}
+
+.user-search-result .user-item {
+    margin-bottom: 10px;
+    margin-top: 10px;
+    border-color: #000000;
+    border: 1px solid;
+    border-radius: 4px;
+    background-color: #e6e6fa;
+}
+
+    .user-search-result .user-item .user-info {
+        text-align: center;
+    }
+
+.user-search-result .subtitle {
+    font-weight: bold;
+    font-family: 'Oswald Regular',Tahoma,sans-serif;
+    color: #464547;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 55px;
+}
+
+.user-search-result .skill-scope {
+    margin-left: 15px;
+}
+
+    .user-search-result .skill-scope .skill-title {
+        float: left;
+        font: 1.0em 'Source Sans Pro Regular',Tahoma,sans-serif;
+        color: #464547;
+    }
+
+    .user-search-result .skill-scope .skill-Rating {
+        margin-left: 68.5%;
+        padding: 0.1em;
+    }
+
+    .user-search-result .skill-scope .strong-match {
+        font-weight: bold;
+        font-style: italic;
+        color: #000000;
+    }
+
+    .user-search-result .skill-scope .soft-match {
+        font-weight: bold;
+        font-style: italic;
+        color: #1001ff;
+    }
+
+    .user-search-result .skill-scope .the-rest-match {
+        font-style: italic;
+        color: #4169e1;
+    }
+
+.user-search-result .preview-strong-match {
+    margin-bottom: 10px;
+    margin-left: 10px;
+    font-style: italic;
+    font-weight: bold;
+    color: #000000;
+}
+
+.user-search-result .preview-soft-match {
+    margin-bottom: 10px;
+    margin-left: 10px;
+    font-style: italic;
+    font-weight: bold;
+    color: #1001ff;
+}
+
+.user-search-result .preview-the-rest-match {
+    margin-bottom: 10px;
+    margin-left: 10px;
+    font-style: italic;
+    color: #4169e1;
+}
+

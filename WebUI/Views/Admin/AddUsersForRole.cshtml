@@ -1,0 +1,64 @@
+﻿@model WebUI.Models.UsersListForAddingToRolesViewModel
+
+@using WebUI.HtmlHelpers
+
+
+@{
+    ViewBag.Title = "AddUsersForRole";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="navbar-header">
+        @Html.ActionLink("Users", "Users", "Admin", null, new { @class = "navbar-brand" })
+        @Html.ActionLink("Roles", "Roles", "Admin", null, new { @class = "navbar-brand" })
+    </div>
+</div>
+
+
+@if (ViewData["RoleName"] != null)
+{
+    <h2>Add user for @ViewData["RoleName"] role</h2>
+}
+<div>
+    @if (TempData["message"] != null)
+    {
+        <div class="Message">@TempData["message"]</div>
+    }
+
+
+    <table class="table">
+        <tr>
+            <th>
+                <!--            Html.DisplayNameFor(x => x.UserViewModels =>)-->
+                Name
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model.UserViewModels)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @using (Html.BeginForm("AddUsersForRole", "Admin"))
+                    {
+                        @Html.Hidden("roleId", Model.CurrentRoleId)
+                        @Html.Hidden("userId", item.Id)
+                        @Html.Hidden("returnUrl", Model.ReturnUrl)
+                        <input type="submit" value="Add" />
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+
+    <div class="pager">
+        @Html.PageLinks(Model.PagingInfo, x => Url.Action("AddUsersForRole",
+        new { roleId = Model.CurrentRoleId, page = x }))
+    </div>
+</div>
+
+
