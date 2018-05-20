@@ -50,27 +50,8 @@ namespace DAL.Identity.Repositories
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-        private bool disposed = false;
-
-        public virtual void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                    if (_userManager != null)
-                        _userManager.Dispose();
-                    if (_roleManager != null)
-                        _roleManager.Dispose();
-                    if (_db != null)
-                        _db.Dispose();
-                }
-                this.disposed = true;
-            }
-        }
+            _db.Dispose();
+        }       
     }
 }
 

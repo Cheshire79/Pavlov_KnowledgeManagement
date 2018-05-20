@@ -50,22 +50,10 @@ namespace KnowledgeManagement.DAL.Repository
         {
             _db.SaveChanges();
         }
-        private bool disposed = false;
-        protected void Dispose(bool disposing)
-        {           
-            if (!this.disposed)
-            {                
-                if (disposing)
-                {                   
-                    _db.Dispose();
-                }
-                this.disposed = true;
-            }
-        }
+      
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            _db.Dispose();
         }
           
     }
