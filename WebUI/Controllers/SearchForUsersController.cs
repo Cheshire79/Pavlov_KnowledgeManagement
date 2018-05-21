@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using BLL.Identity.Services.Interfaces;
 using KnowledgeManagement.BLL.SpecifyingSkill.Services;
+using Rotativa.MVC;
 using WebUI.Models;
 using WebUI.Models.KnowledgeManagement;
 using WebUI.Models.SearchForUsers;
@@ -69,7 +70,7 @@ namespace WebUI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "manager")]
-        public async Task<ActionResult> Index(List<SpecifyingSkillForSearchSaveModel> specifyingSkillsForSearchSaveModel)
+        public async Task<ActionResult> Index(List<SpecifyingSkillForSearchSaveModel> specifyingSkillsForSearchSaveModel, UsersSearchResult usersSearchResult)
         {
 
 
@@ -176,7 +177,21 @@ namespace WebUI.Controllers
                     }
                 }
             });
+            // save search result on client side to pass them to PrintSearch
+            usersSearchResult.SpecifyingSkillsForSearchSaveModel =
+                usersSearchResultViewModel.SpecifyingSkillsForSearchSaveModel;
+            usersSearchResult.UserSearchListResultViewModel =
+                usersSearchResultViewModel.UserSearchListResultViewModel;
             return View("SearchResult", usersSearchResultViewModel);
+        }
+        [Authorize(Roles = "manager")]
+        public ActionResult PrintSearch(UsersSearchResult usersSearchResult)
+        {
+            UsersSearchResultViewModel usersSearchResultViewModel = new UsersSearchResultViewModel();
+            usersSearchResultViewModel.SpecifyingSkillsForSearchSaveModel = usersSearchResult.SpecifyingSkillsForSearchSaveModel;
+            usersSearchResultViewModel.UserSearchListResultViewModel = usersSearchResult.UserSearchListResultViewModel;
+            var report = new ViewAsPdf("SearchResult", usersSearchResultViewModel);
+            return report;
         }
         protected override void Dispose(bool disposing)
         {
