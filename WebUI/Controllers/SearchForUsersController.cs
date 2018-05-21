@@ -190,7 +190,7 @@ namespace WebUI.Controllers
             UsersSearchResultViewModel usersSearchResultViewModel = new UsersSearchResultViewModel();
             usersSearchResultViewModel.SpecifyingSkillsForSearchSaveModel = usersSearchResult.SpecifyingSkillsForSearchSaveModel;
             usersSearchResultViewModel.UserSearchListResultViewModel = usersSearchResult.UserSearchListResultViewModel;
-            var report = new ViewAsPdf("SearchResult", usersSearchResultViewModel);
+            var report = new ViewAsPdf("_SearchResultPartial", usersSearchResultViewModel);
             return report;
         }
         protected override void Dispose(bool disposing)

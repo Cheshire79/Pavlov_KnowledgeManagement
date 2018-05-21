@@ -6,68 +6,13 @@
 }
 
 
-<div class="user-search-result">
-    <div class="title">Users list</div>
+@{ Html.RenderPartial("_SearchResultPartial", Model); }
 
-    <div class="form-horizontal">
-        <!--{ int minLevelId = Model.LevelsViewModel.OrderBy(x => x.Order).First().Id; }
-            && x.LevelId != minLevelId-->
-        @foreach (var item in Model.UserSearchListResultViewModel)
-        {
-            <div class="user-item">
-                <div class="user-info">User name: <b>@item.UserViewModel.Name</b></div>
-
-                @foreach (var specifyingSkill in item.SpecifyingSkills)
-                {
-                    if (specifyingSkill.SubSkillListViewModel.Any())
-                    {
-                        <div class="subtitle">@specifyingSkill.SkillViewModel.Name</div>
-                        <div class="skill-scope">
-
-                            @foreach (var subSkill in specifyingSkill.SubSkillListViewModel)
-                            {
-
-                                <div class="skill-title">
-                                    @if (Model.SpecifyingSkillsForSearchSaveModel.Any(x => x.OrHigher == false
-                                                                                           && x.SubSkillId == subSkill.SubSkillViewModel.Id))
-                                    {
-                                        <div class="strong-match">
-                                            @subSkill.SubSkillViewModel.Name
-                                        </div>
-                                    }
-                                    else
-                                        if (Model.SpecifyingSkillsForSearchSaveModel.Any(x => x.OrHigher == true && x.SubSkillId == subSkill.SubSkillViewModel.Id))
-                                        {
-                                            <div class="soft-match">
-                                                @subSkill.SubSkillViewModel.Name
-                                            </div>
-                                        }
-                                        else
-                                        { <div class="the-rest-match">
-                                            @subSkill.SubSkillViewModel.Name
-                                        </div>
-                                        }
-                                </div>
-
-                                <div class="skill-Rating">@subSkill.Level.Name</div>
-                            }
-                        </div>
-                    }
-                }
-            </div>
-        }
-    </div>
-    <div >
-        <a class="preview-strong-match">strong match</a><a class="preview-soft-match">soft match</a><a class="preview-the-rest-match">and the skills which do not match the criteria</a>
-
-    </div>
-</div>
-
-@using (Html.BeginForm("PrintSearch", "SearchForUsers"))
+@using (Html.BeginForm("PrintSearch", "SearchForUsers", FormMethod.Post, new { target = "_blank" }))
 {
 
-    <div class="form-horizontal">      
-        <hr />     
+    <div class="form-horizontal">
+        <hr />
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Generate report" class="btn btn-default" />
