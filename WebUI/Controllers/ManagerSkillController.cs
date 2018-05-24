@@ -49,7 +49,10 @@ namespace WebUI.Controllers
             SkillViewModel skillViewModel =
 
 
-                   new SkillViewModel() { ReturnUrl = returnUrl ?? Url.Action("Skills") };
+                   new SkillViewModel()
+                   {
+                       ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Skills") : returnUrl
+                   };
 
             return View(skillViewModel);
 
@@ -78,7 +81,7 @@ namespace WebUI.Controllers
                 await Task.Run(() =>
                  _skillService.Delete(id)
                  );
-                string temp = returnUrl ?? Url.Action("Skills");
+                string temp = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Skills") : returnUrl;
                 return Redirect(temp);
             }
 
@@ -106,7 +109,7 @@ namespace WebUI.Controllers
                    {
                        Id = skill.Id,
                        Name = skill.Name,
-                       ReturnUrl = returnUrl ?? Url.Action("Skills")
+                       ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Skills") : returnUrl
                    };
                });
                 return View(skillViewModel);
@@ -143,7 +146,7 @@ namespace WebUI.Controllers
         [Authorize(Roles = "manager")]
         public async Task<ActionResult> EditSubSkills(int? skillId, string returnUrl)
         {
-            string temp = returnUrl ?? Url.Action("Skills");
+
             if (skillId == null)
                 return HttpNotFound("Missed id value");
             try
@@ -159,7 +162,7 @@ namespace WebUI.Controllers
                                Id = skillId.Value,
                                Name = _skillService.Get(skillId.Value).Name
                            },
-                           ReturnUrl = temp // returnUrl ?? Url.Action("Skills")
+                           ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Skills") : returnUrl
                        });
                 return View(subSkillListViewModel);
             }
@@ -185,7 +188,11 @@ namespace WebUI.Controllers
                await Task.Run(() =>
                {
                    var skill = _skillService.Get(skillId.Value);
-                   return new SubSkillViewModel() { SkillId = skill.Id, ReturnUrl = returnUrl ?? Url.Action("EditSubSkills", new { skillId }) };
+                   return new SubSkillViewModel()
+                   {
+                       SkillId = skill.Id,                       
+                       ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("EditSubSkills", new { skillId }) : returnUrl
+                   };
                });
                 return View(subSkillViewModel);
             }
@@ -227,9 +234,8 @@ namespace WebUI.Controllers
             try
             {
                 await Task.Run(() =>
-                 _subSkillService.Delete(subSkillid)
-                 );
-                return Redirect(returnUrl ?? Url.Action("Skill"));
+                 _subSkillService.Delete(subSkillid));
+                return Redirect(string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Skill") : returnUrl);
             }
             catch (Exception ex)
             {
@@ -256,7 +262,7 @@ namespace WebUI.Controllers
                        Id = subSkill.Id,
                        SkillId = subSkill.SkillId,
                        Name = subSkill.Name,
-                       ReturnUrl = returnUrl ?? Url.Action("EditSubSkills", new { subSkill.SkillId })
+                       ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("EditSubSkills", new { subSkill.SkillId }) : returnUrl                       
                    };
                });
                 return View(subSkillViewModel);
@@ -293,7 +299,7 @@ namespace WebUI.Controllers
 
 
         #endregion
- 
+
         protected override void Dispose(bool disposing)
         {
             _subSkillService.Dispose(); ;

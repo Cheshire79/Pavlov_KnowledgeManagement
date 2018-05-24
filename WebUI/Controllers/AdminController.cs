@@ -109,7 +109,7 @@ namespace WebUI.Controllers
                 {
                     CurrentPage = page,
                     ItemsPerPage = PageSize,
-                    TotalItems = _identityService.GetUsers().Count()
+                    TotalItems = _identityService.GetUsers().Except(usersInRole).Count()
                 },
                 CurrentRoleId = roleId,
                 ReturnUrl = returnUrl
@@ -122,12 +122,12 @@ namespace WebUI.Controllers
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> AddUsersForRole(string roleId, string userId, string returnUrl, FormCollection collection)
         {
-
+            
             OperationDetails operationDetails = await _identityService.AddUserToRoleAsync(userId, roleId);
             if (operationDetails.Succedeed)
             {
-                TempData["message"] = operationDetails.Message;
-                return Redirect(returnUrl ?? Url.Action("Roles"));
+                TempData["message"] = operationDetails.Message;                
+                return Redirect(string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Roles") : returnUrl);//todo
             }
             else
             {
@@ -146,8 +146,8 @@ namespace WebUI.Controllers
 
             if (operationDetails.Succedeed)
             {
-                TempData["message"] = operationDetails.Message;
-                return Redirect(returnUrl ?? Url.Action("Roles"));
+                TempData["message"] = operationDetails.Message;                
+                return Redirect(string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Roles") : returnUrl);
             }
             else
             {
@@ -170,8 +170,8 @@ namespace WebUI.Controllers
             OperationDetails operationDetails = await _identityService.DeleteUser(currentUserId, id);
             if (operationDetails.Succedeed)
             {
-                TempData["message"] = operationDetails.Message;
-                return Redirect(returnUrl ?? Url.Action("Users"));
+                TempData["message"] = operationDetails.Message;                
+                return Redirect(string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Users") : returnUrl);
             }
             else
             {

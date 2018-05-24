@@ -57,7 +57,7 @@
 
     <div class="pager">
         @Html.PageLinks(Model.PagingInfo, x => Url.Action("AddUsersForRole",
-        new { roleId = Model.CurrentRoleId, page = x }))
+        new { roleId = Model.CurrentRoleId, page = x, returnUrl = Model.ReturnUrl }))
     </div>
 </div>
 
