@@ -54,6 +54,7 @@
     <Compile Include="Services\SubSkillService.cs" />
     <Compile Include="SpecifyingSkill\DTO\LevelDTO.cs" />
     <Compile Include="SpecifyingSkill\DTO\SpecifyingSkillDTO.cs" />
+    <Compile Include="SpecifyingSkill\DTO\SpecifyingSkillForSearchDTO.cs" />
     <Compile Include="SpecifyingSkill\Services\IUserService.cs" />
     <Compile Include="SpecifyingSkill\Services\UserService.cs" />
   </ItemGroup>

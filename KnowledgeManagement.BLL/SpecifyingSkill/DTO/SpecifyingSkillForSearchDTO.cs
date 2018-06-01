@@ -1,8 +1,8 @@
 ﻿
 
-namespace WebUI.Models.SearchForUsers
+namespace KnowledgeManagement.BLL.SpecifyingSkill.DTO
 {
-    public class SpecifyingSkillForSearchSaveModel
+    public class SpecifyingSkillForSearchDTO
     {
         public int SubSkillId { get; set; }
         public int LevelId { get; set; }

@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using BLL.Infrastructure;
 using KnowledgeManagement.BLL.Infrastructure;
 using Ninject;
 using Ninject.Modules;
+using WebUI.Mapper;
 
 namespace WebUI.Infrastructure
 {
@@ -17,15 +15,14 @@ namespace WebUI.Infrastructure
 
         public NinjectControllerFactory(IKernel ninjectKernel1)
         {
-            // создание контейнера
-            _ninjectKernel = ninjectKernel1; //new StandardKernel();
+          
+            _ninjectKernel = ninjectKernel1; 
             AddBindings();
         }
 
         protected override IController GetControllerInstance(RequestContext requestContext, Type controllerType)
         {
-            // получение объекта контроллера из контейнера 
-            // используя его тип
+     
             return controllerType == null
                 ? null
                 : (IController) _ninjectKernel.Get(controllerType);
@@ -35,12 +32,11 @@ namespace WebUI.Infrastructure
         {
             var modules = new INinjectModule[]
             {
-                new IdentityServiceModule("DefaultConnection", _ninjectKernel),
-                //new SubjectAreaRepositoryModule("DefaultConnection"),
+                new IdentityServiceModule("DefaultConnection", _ninjectKernel),               
                 new ServiceModule("DefaultConnection", _ninjectKernel)
             };
-            _ninjectKernel.Load(modules);        
-            //    ninjectKernel.Bind<IUnitOfWork>().To<IdentityUnitOfWork>();//.WithConstructorArgument("connection", "IdentityDb"); ;
+            _ninjectKernel.Load(modules);
+            _ninjectKernel.Bind<IMapperFactoryWEB>().To<MapperFactoryWEB>();
 
         }
     }
