@@ -1,70 +1,69 @@
 ﻿
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using AutoMapper;
 using BLL.Identity.DTO;
 using BLL.Identity.Services.Interfaces;
 using BLL.Identity.Validation;
 using Microsoft.AspNet.Identity;
+using WebUI.Mapper;
 using WebUI.Models;
 namespace WebUI.Controllers
 {
     public class AdminController : Controller
     {
         private IIdentityService _identityService;
+        private IMapper _mapper;
         public int PageSize = 4;
 
-        public AdminController(IIdentityService identityService)
+        public AdminController(IIdentityService identityService, IMapperFactoryWEB mapperFactory)
         {
             _identityService = identityService;
+            _mapper = mapperFactory.CreateMapperWEB();
+            //   await Task.Run(() => todo what is the sence of this ?
         }
 
 
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> Users(int page = 1)
         {
-            UsersListViewModel viewModel =                 
+            UsersListViewModel viewModel =
                      new UsersListViewModel
-            {
-                UserViewModels = await _identityService.GetUsers().
-                OrderBy(x => x.Name).Select(x => new UserViewModel
-                {
-                    Name = x.Name,
-                    Id = x.Id
-                }).Skip((page - 1) * PageSize)
-               .Take(PageSize).ToListAsync(),
-                PagingInfo = new PagingInfo
-                {
-                    CurrentPage = page,
-                    ItemsPerPage = PageSize,
-                    TotalItems = await _identityService.GetUsers().CountAsync()
-                }
-            };
+                     {
+                         UserViewModels = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<UserViewModel>>(await _identityService.GetUsers().
+                OrderBy(x => x.Name).Skip((page - 1) * PageSize)
+               .Take(PageSize).ToListAsync()),
+                         PagingInfo = new PagingInfo
+                         {
+                             CurrentPage = page,
+                             ItemsPerPage = PageSize,
+                             TotalItems = await _identityService.GetUsers().CountAsync()
+                         }
+                     };
             return View(viewModel);
         }
 
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> Roles(string roleId, int page = 1)// todo can be added field for search
         {
-            IQueryable<UserDTO> users =  await _identityService.GetUsersInRoleAsync(roleId);// todo async
-            UsersListForRolesViewModel viewModel =new UsersListForRolesViewModel
-                                       {
-                                           UserViewModels = await users.OrderBy(x => x.Name)
-                                                           .Select(x => new UserViewModel
-                                                           {
-                                                               Name = x.Name,
-                                                               Id = x.Id
-                                                           }).Skip((page - 1) * PageSize)
-                                                           .Take(PageSize).ToListAsync(),
-                                           PagingInfo = new PagingInfo
-                                                         {
-                                                             CurrentPage = page,
-                                                             ItemsPerPage = PageSize,
-                                                             TotalItems = await users.CountAsync()
-                                                         },
-                                           CurrentRoleId = roleId
-                                       };
+
+            IQueryable<UserDTO> users = await _identityService.GetUsersInRoleAsync(roleId);
+            UsersListForRolesViewModel viewModel = new UsersListForRolesViewModel
+            {
+                UserViewModels = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<UserViewModel>>(
+                                        await users.OrderBy(x => x.Name).Skip((page - 1) * PageSize).Take(PageSize).ToListAsync()
+                                               ),
+                PagingInfo = new PagingInfo
+                {
+                    CurrentPage = page,
+                    ItemsPerPage = PageSize,
+                    TotalItems = await users.CountAsync()
+                },
+                CurrentRoleId = roleId
+            };
             return View(viewModel);
         }
 
@@ -76,11 +75,10 @@ namespace WebUI.Controllers
         {
             RolesMenuViewModel rolesMenu = new RolesMenuViewModel()
             {
-                RoleList =
-                    //   await Task.Run(() =>
-              _identityService.GetRoles().OrderBy(x => x.Name)
-                   .Select(x => new RoleViewModel { Name = x.Name, Id = x.Id })
-                   ,
+                RoleList = _mapper.Map<IEnumerable<RoleDTO>, IEnumerable<RoleViewModel>>
+                                        (
+                                _identityService.GetRoles().OrderBy(x => x.Name)
+                                        ),
                 SelectedRoleId = roleId
             };
 
@@ -96,13 +94,11 @@ namespace WebUI.Controllers
             var usersInRole = await _identityService.GetUsersInRoleAsync(roleId);
             UsersListForAddingToRolesViewModel viewModel = new UsersListForAddingToRolesViewModel
             {
-                UserViewModels = await _identityService.GetUsers().Except(usersInRole).OrderBy(x => x.Name)
-                .Select(x => new UserViewModel
-                {
-                    Name = x.Name,
-                    Id = x.Id
-                }).Skip((page - 1) * PageSize)
-               .Take(PageSize).ToListAsync(),
+                UserViewModels = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<UserViewModel>>
+                                        (
+                            await _identityService.GetUsers().Except(usersInRole).OrderBy(x => x.Name)
+                            .Skip((page - 1) * PageSize).Take(PageSize).ToListAsync()
+                                        ),
                 PagingInfo = new PagingInfo
                 {
                     CurrentPage = page,
@@ -120,11 +116,11 @@ namespace WebUI.Controllers
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> AddUsersForRole(string roleId, string userId, string returnUrl, FormCollection collection)
         {
-            
+
             OperationDetails operationDetails = await _identityService.AddUserToRoleAsync(userId, roleId);
             if (operationDetails.Succedeed)
             {
-                TempData["message"] = operationDetails.Message;                
+                TempData["message"] = operationDetails.Message;
                 return Redirect(string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Roles") : returnUrl);
             }
             else
@@ -144,7 +140,7 @@ namespace WebUI.Controllers
 
             if (operationDetails.Succedeed)
             {
-                TempData["message"] = operationDetails.Message;                
+                TempData["message"] = operationDetails.Message;
                 return Redirect(string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Roles") : returnUrl);
             }
             else
@@ -164,7 +160,7 @@ namespace WebUI.Controllers
             OperationDetails operationDetails = await _identityService.DeleteUser(currentUserId, id);
             if (operationDetails.Succedeed)
             {
-                TempData["message"] = operationDetails.Message;                
+                TempData["message"] = operationDetails.Message;
                 return Redirect(string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Users") : returnUrl);
             }
             else
@@ -176,7 +172,7 @@ namespace WebUI.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            _identityService.Dispose();         
+            _identityService.Dispose();
             base.Dispose(disposing);
         }
     }
