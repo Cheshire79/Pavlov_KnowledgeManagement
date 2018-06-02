@@ -19,6 +19,9 @@ namespace WebUI.Mapper
                 cfg.CreateMap<SpecifyingSkillForSearchSaveModel, SpecifyingSkillForSearchDTO>();
                 cfg.CreateMap<UserDTO, UserViewModel>();
                 cfg.CreateMap<RoleDTO, RoleViewModel>();
+
+                cfg.CreateMap<LoginViewModel, UserDTO>();
+                
             });
             _mapper = config.CreateMapper();
 

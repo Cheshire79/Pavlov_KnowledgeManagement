@@ -5,12 +5,14 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using AutoMapper;
 using BLL.Identity.DTO;
 using BLL.Identity.Services;
 using BLL.Identity.Services.Interfaces;
 using BLL.Identity.Validation;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
+using WebUI.Mapper;
 using WebUI.Models;
 
 
@@ -21,16 +23,14 @@ namespace WebUI.Controllers
     {
 
         private IIdentityService _identityService;
-     
-        public AccountController(IIdentityService identityService)
+        private IMapper _mapper;
+
+        public AccountController(IIdentityService identityService, IMapperFactoryWEB mapperFactory)
         {
             _identityService = identityService;
+            _mapper = mapperFactory.CreateMapperWEB();
         }
 
-
-
-        //
-        // GET: /Account/Login
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
@@ -38,8 +38,7 @@ namespace WebUI.Controllers
             return View();
         }
 
-        //
-        // POST: /Account/Login
+  
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -49,8 +48,8 @@ namespace WebUI.Controllers
           
             if (ModelState.IsValid)
             {
-                UserDTO userDto = new UserDTO { Name = model.UserName, Password = model.Password };
-                if ((await TryToSignInAsync(userDto, model.RememberMe)))
+                UserDTO userDto = _mapper.Map<LoginViewModel, UserDTO> (model);
+                if (await TryToSignInAsync(userDto, model.RememberMe))
                     return RedirectToLocal(returnUrl);
                 ModelState.AddModelError("", "Invalid username or password.");
             }
@@ -87,12 +86,12 @@ namespace WebUI.Controllers
                 {
                     Password = model.Password,
                     Name = model.UserName,
-                    RoleByDefault = "user"//todo
+                    RoleByDefault = "user"
                 };
                 OperationDetails operationDetails = await _identityService.Create(userDto);
                 if (operationDetails.Succedeed)
                 {
-                    if ((await TryToSignInAsync(userDto, false)))
+                    if (await TryToSignInAsync(userDto, false))
                         return RedirectToAction("Index", "Home");
                 }
                 else
@@ -102,9 +101,6 @@ namespace WebUI.Controllers
             return View(model);
         }
 
-   
-        //
-        // GET: /Account/Manage
         public ActionResult Manage(string message)
         {
             ViewBag.StatusMessage = message;
@@ -112,8 +108,6 @@ namespace WebUI.Controllers
             return View();
         }
 
-        //
-        // POST: /Account/Manage
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Manage(ManageUserViewModel model)
@@ -139,8 +133,6 @@ namespace WebUI.Controllers
             return View(model);
         }
 
-        //
-        // POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
@@ -149,7 +141,6 @@ namespace WebUI.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-       
 
         private IAuthenticationManager AuthenticationManager
         {
