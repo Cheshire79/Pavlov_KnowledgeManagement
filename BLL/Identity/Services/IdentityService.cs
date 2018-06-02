@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -28,36 +29,26 @@ namespace BLL.Identity.Services
             if (user == null)
             {
                 user = new ApplicationUser { UserName = userDto.Name };
-                await _unitOfWork.UserManager.CreateAsync(user, userDto.Password);
-                // добавляем роль
+                await _unitOfWork.UserManager.CreateAsync(user, userDto.Password);               
                 await _unitOfWork.UserManager.AddToRoleAsync(user.Id, userDto.RoleByDefault);
-                // создаем профиль клиента
-
                 await _unitOfWork.SaveAsync();
-                //return new OperationDetails(true, "Регистрация успешно пройдена", "");
                 return new OperationDetails(true, "Registration successfully passed", "");
-
             }
             else
             {
                 return new OperationDetails(false, "Name " + userDto.Name + " is already taken", "UserName");
-                //return new OperationDetails(false, "Пользователь с таким логином уже существует", "Name");
             }
         }
 
         public async Task<ClaimsIdentity> Authenticate(UserDTO userDto) //todo
         {
             ClaimsIdentity claim = null;
-            // находим пользователя
             ApplicationUser user = await _unitOfWork.UserManager.FindAsync(userDto.Name, userDto.Password);
-            // why we need password ?
-            // авторизуем его и возвращаем объект ClaimsIdentity
-            if (user != null)
+                     if (user != null)
                 claim = await _unitOfWork.UserManager.CreateIdentityAsync(user,
                     DefaultAuthenticationTypes.ApplicationCookie);
             return claim;
         }
-
        
         public IQueryable<UserDTO> GetUsers()
         {
@@ -90,11 +81,10 @@ namespace BLL.Identity.Services
             return new RoleDTO { Id = role.Id, Name = role.Name };
         }
 
-        public async Task<IQueryable<UserDTO>> GetUsersInRole(string roleId)
+        public async Task<IQueryable<UserDTO>> GetUsersInRoleAsync(string roleId)
         {
-            return await Task.Run(() =>
-            {
-                var role = _unitOfWork.RoleManager.Roles.FirstOrDefault(r => r.Id == roleId);
+ 
+            var role = await _unitOfWork.RoleManager.Roles.FirstOrDefaultAsync(r => r.Id == roleId);
                 if (role != null)
                 {
                     return from user in _unitOfWork.UserManager.Users
@@ -110,7 +100,7 @@ namespace BLL.Identity.Services
                     Id = x.Id,
                     Name = x.UserName
                 });
-            });
+           
         }
 
         public async Task<OperationDetails> AddUserToRoleAsync(string userId, string roleId)
@@ -126,8 +116,7 @@ namespace BLL.Identity.Services
             }
             catch (Exception ex)
             {
-                throw new ArgumentException("Cannot add user with id="+userId+" to role with id=" + roleId);
-                
+                throw new ArgumentException("Cannot add user with id="+userId+" to role with id=" + roleId);                
             }
             
             if (added.Succeeded)
@@ -213,7 +202,6 @@ namespace BLL.Identity.Services
                 return new OperationDetails(false, "Cannot delete user. Something happens", "");
             }
         }
-
 
         public void Dispose()
         {

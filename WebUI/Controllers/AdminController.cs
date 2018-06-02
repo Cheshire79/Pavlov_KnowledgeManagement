@@ -1,7 +1,9 @@
 ﻿
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using BLL.Identity.DTO;
 using BLL.Identity.Services.Interfaces;
 using BLL.Identity.Validation;
 using Microsoft.AspNet.Identity;
@@ -10,7 +12,6 @@ namespace WebUI.Controllers
 {
     public class AdminController : Controller
     {
-
         private IIdentityService _identityService;
         public int PageSize = 4;
 
@@ -23,50 +24,47 @@ namespace WebUI.Controllers
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> Users(int page = 1)
         {
-            UsersListViewModel viewModel =
-                 await Task.Run(() => new UsersListViewModel
+            UsersListViewModel viewModel =                 
+                     new UsersListViewModel
             {
-                UserViewModels = _identityService.GetUsers().
+                UserViewModels = await _identityService.GetUsers().
                 OrderBy(x => x.Name).Select(x => new UserViewModel
                 {
                     Name = x.Name,
                     Id = x.Id
                 }).Skip((page - 1) * PageSize)
-               .Take(PageSize),
+               .Take(PageSize).ToListAsync(),
                 PagingInfo = new PagingInfo
                 {
                     CurrentPage = page,
                     ItemsPerPage = PageSize,
-                    TotalItems = _identityService.GetUsers().Count()
+                    TotalItems = await _identityService.GetUsers().CountAsync()
                 }
-            });
+            };
             return View(viewModel);
         }
 
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> Roles(string roleId, int page = 1)// todo can be added field for search
         {
-            var users = await _identityService.GetUsersInRole(roleId);
-
-            UsersListForRolesViewModel viewModel =
-                 await Task.Run(() => new UsersListForRolesViewModel
+            IQueryable<UserDTO> users =  await _identityService.GetUsersInRoleAsync(roleId);// todo async
+            UsersListForRolesViewModel viewModel =new UsersListForRolesViewModel
                                        {
-                                           UserViewModels = users.OrderBy(x => x.Name)
+                                           UserViewModels = await users.OrderBy(x => x.Name)
                                                            .Select(x => new UserViewModel
                                                            {
                                                                Name = x.Name,
                                                                Id = x.Id
                                                            }).Skip((page - 1) * PageSize)
-                                                           .Take(PageSize).ToList(),//todo
+                                                           .Take(PageSize).ToListAsync(),
                                            PagingInfo = new PagingInfo
                                                          {
                                                              CurrentPage = page,
                                                              ItemsPerPage = PageSize,
-                                                             TotalItems = users.Count()
+                                                             TotalItems = await users.CountAsync()
                                                          },
                                            CurrentRoleId = roleId
-                                       }
-                             );
+                                       };
             return View(viewModel);
         }
 
@@ -95,26 +93,26 @@ namespace WebUI.Controllers
             var role = await _identityService.FindRoleByIdAsync(roleId);
             if (role != null)
                 ViewData["RoleName"] = role.Name;
-            var usersInRole = await _identityService.GetUsersInRole(roleId);
-            UsersListForAddingToRolesViewModel viewModel = await Task.Run(() => new UsersListForAddingToRolesViewModel
+            var usersInRole = await _identityService.GetUsersInRoleAsync(roleId);
+            UsersListForAddingToRolesViewModel viewModel = new UsersListForAddingToRolesViewModel
             {
-                UserViewModels = _identityService.GetUsers().Except(usersInRole).OrderBy(x => x.Name)
+                UserViewModels = await _identityService.GetUsers().Except(usersInRole).OrderBy(x => x.Name)
                 .Select(x => new UserViewModel
                 {
                     Name = x.Name,
                     Id = x.Id
                 }).Skip((page - 1) * PageSize)
-               .Take(PageSize),
+               .Take(PageSize).ToListAsync(),
                 PagingInfo = new PagingInfo
                 {
                     CurrentPage = page,
                     ItemsPerPage = PageSize,
-                    TotalItems = _identityService.GetUsers().Except(usersInRole).Count()
+                    TotalItems = await _identityService.GetUsers().Except(usersInRole).CountAsync()
                 },
                 CurrentRoleId = roleId,
                 ReturnUrl = returnUrl
 
-            });
+            };
             return View(viewModel);
         }
 
@@ -127,12 +125,12 @@ namespace WebUI.Controllers
             if (operationDetails.Succedeed)
             {
                 TempData["message"] = operationDetails.Message;                
-                return Redirect(string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Roles") : returnUrl);//todo
+                return Redirect(string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Roles") : returnUrl);
             }
             else
             {
                 TempData["message"] = operationDetails.Message;
-                return RedirectToAction("Roles");//View(); todo message
+                return RedirectToAction("Roles");
             }
         }
 
@@ -154,13 +152,9 @@ namespace WebUI.Controllers
                 TempData["message"] = operationDetails.Message;
                 return RedirectToAction("Roles");
             }
-
-
         }
 
 
-        //
-        // POST: /Admin/Delete/5
         [HttpPost]
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> DeleteUser(string id, string returnUrl, FormCollection collection)
