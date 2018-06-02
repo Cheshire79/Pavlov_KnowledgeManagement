@@ -97,6 +97,31 @@ namespace KnowledgeManagement.BLL.SpecifyingSkill.Services
 
         public IEnumerable<string> GetUsersIdByCriteria(IEnumerable<SpecifyingSkillForSearchDTO> specifyingSkillsForSearch)
         {
+
+            //  test sample for problem how to get IQueryable set of userId
+            // reason - unable-to-create-a-constant-value-of-type
+            //AsQueryable() sence of using ?
+            //https://stackoverflow.com/questions/17366907/what-is-the-purpose-of-asqueryable
+            //https://weblogs.asp.net/dixin/understanding-linq-to-sql-4-data-retrieving-via-query-methods
+            //https://stackoverflow.com/questions/18929483/unable-to-create-a-constant-value-of-type-only-primitive-types-or-enumeration-ty
+
+            var t = specifyingSkillsForSearch.ToList();           
+            IEnumerable<string> usersId2 = (from specifying in _unitOfWork.SpecifyingSkills.GetAll().ToList()
+
+                                            join needed in t
+                    on specifying.SubSkillId equals needed.SubSkillId
+                where (needed.LevelId == specifying.LevelId)
+                group specifying by specifying.UserId into gr
+                where gr.Count() == t.Count()
+                select gr.Key);
+
+            var test = usersId2.ToList();
+
+
+
+
+
+
             int minLevelOrder = GetLevels().OrderBy(x => x.Order).First().Order;
             var needSubSkill = (from needed in specifyingSkillsForSearch
                                 join levelOrder in GetLevels()
