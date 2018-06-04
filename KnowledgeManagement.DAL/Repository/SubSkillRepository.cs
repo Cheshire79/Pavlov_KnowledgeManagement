@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using KnowledgeManagement.DAL.EF;
 using KnowledgeManagement.DAL.Entities;
 
@@ -22,9 +23,9 @@ namespace KnowledgeManagement.DAL.Repository
             return _db.SubSkills;
         }
 
-        public SubSkill Get(int id)
+        public async Task<SubSkill> GetByIdAsync(int id)
         {
-            return _db.SubSkills.Find(id);
+            return await _db.SubSkills.FindAsync(id);
         }
 
         public void Create(SubSkill subskill)
@@ -32,17 +33,17 @@ namespace KnowledgeManagement.DAL.Repository
             _db.SubSkills.Add(subskill);          
         }
 
-        public void Update(SubSkill subskill)
+        public async Task Update(SubSkill subskill)
         {
 
-            var originSubSkill = _db.SubSkills.Find(subskill.Id);
+            var originSubSkill = await _db.SubSkills.FindAsync(subskill.Id);
             if (originSubSkill == null)
                 throw new ArgumentException("SubSkill was not updated. Cannot find subskill with Id = " + originSubSkill.Id);
-              Skill skill = _db.Skills.Find(originSubSkill.SkillId);
+              Skill skill = await _db.Skills.FindAsync(originSubSkill.SkillId);
             if (skill != null)
             {
                 originSubSkill.Name = subskill.Name;
-                _db.SaveChanges();               
+              //  await _db.SaveChangesAsync();               //todo where call save ?
             }
             else
             {
@@ -50,12 +51,12 @@ namespace KnowledgeManagement.DAL.Repository
             }
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {                                                        
-            SubSkill subSkill = _db.SubSkills.Find(id);
+            SubSkill subSkill = await _db.SubSkills.FindAsync(id);
             if (subSkill == null)
                 throw new ArgumentException("Subskill was not deleted. Cannot find subskill with indicated ID");
-            Skill skill = _db.Skills.Find(subSkill.SkillId);
+            Skill skill = await _db.Skills.FindAsync(subSkill.SkillId);
             if (skill != null)
             {
                 _db.SubSkills.Remove(subSkill);

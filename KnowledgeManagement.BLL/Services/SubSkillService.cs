@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using KnowledgeManagement.BLL.DTO;
 using KnowledgeManagement.DAL.Entities;
 using KnowledgeManagement.DAL.Repository;
 
 namespace KnowledgeManagement.BLL.Services
 {
- 
+
     class SubSkillService : ISubSkillService
     {
         private IUnitOfWork _unitOfWork;
@@ -21,25 +22,22 @@ namespace KnowledgeManagement.BLL.Services
             return _unitOfWork.SubSkills.GetAll().Select(x => new SubSkillDTO() { Id = x.Id, Name = x.Name, SkillId = x.SkillId }); ;
         }
 
-        public SubSkillDTO Get(int id)
+        public async Task<SubSkillDTO> GetByIdAsync(int id)
         {
-            var subSkill = _unitOfWork.SubSkills.Get(id);
+            var subSkill = await _unitOfWork.SubSkills.GetByIdAsync(id);
             if (subSkill == null)
                 throw new ArgumentException("There is no skill with id " + id);
-            var skill = _unitOfWork.Skills.Get(subSkill.SkillId);
+            var skill = await _unitOfWork.Skills.GetByIdAsync(subSkill.SkillId);
             if (skill == null)
             {
                 //todo   need to log Error
             }
-
-            return new SubSkillDTO() { Name = subSkill.Name, Id = subSkill.Id, SkillId = subSkill.SkillId };            
-            
-            
+            return new SubSkillDTO() { Name = subSkill.Name, Id = subSkill.Id, SkillId = subSkill.SkillId };
         }
 
-        public void Create(SubSkillDTO subskill)
+        public async Task Create(SubSkillDTO subskill)
         {
-            var temp = _unitOfWork.Skills.Get(subskill.SkillId);
+            var temp = await _unitOfWork.Skills.GetByIdAsync(subskill.SkillId);
             if (temp == null)
                 throw new ArgumentException("There is no skill with Id =" + subskill.SkillId);
 
@@ -48,30 +46,28 @@ namespace KnowledgeManagement.BLL.Services
                 Name = subskill.Name,
                 SkillId = subskill.SkillId
             });
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
         }
 
-        public void Update(SubSkillDTO subskillDTO)
+        public async Task Update(SubSkillDTO subskillDTO)
         {
-            _unitOfWork.SubSkills.Update(new SubSkill() { Id = subskillDTO.Id, Name = subskillDTO.Name,SkillId = subskillDTO.SkillId});
-            _unitOfWork.Save();
+            await _unitOfWork.SubSkills.Update(new SubSkill() { Id = subskillDTO.Id, Name = subskillDTO.Name, SkillId = subskillDTO.SkillId });
+            await _unitOfWork.SaveAsync();
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            _unitOfWork.SubSkills.Delete(id);
-            _unitOfWork.Save();
+            await _unitOfWork.SubSkills.Delete(id);
+            await _unitOfWork.SaveAsync();
         }
-        public IQueryable<SubSkillDTO> GetSubSkillBySkillId(int id)
+        public async Task<IQueryable<SubSkillDTO>> GetSubSkillBySkillId(int id)
         {
-            if (_unitOfWork.Skills.Get(id) == null)
+            if ((await _unitOfWork.Skills.GetByIdAsync(id)) == null)
                 throw new ArgumentException("There is no skill with id " + id);
             return _unitOfWork.SubSkills.GetAll()
                   .Where(x => x.SkillId == id)
                   .Select(x => new SubSkillDTO() { Id = x.Id, Name = x.Name, SkillId = x.SkillId });
-
         }
-
 
         public void Dispose()
         {

@@ -1,9 +1,11 @@
 ﻿
 using AutoMapper;
 using BLL.Identity.DTO;
+using KnowledgeManagement.BLL.DTO;
 using WebUI.Models.SearchForUsers;
 using KnowledgeManagement.BLL.SpecifyingSkill.DTO;
 using WebUI.Models;
+using WebUI.Models.KnowledgeManagement;
 
 namespace WebUI.Mapper
 {
@@ -20,8 +22,13 @@ namespace WebUI.Mapper
                 cfg.CreateMap<UserDTO, UserViewModel>();
                 cfg.CreateMap<RoleDTO, RoleViewModel>();
 
-                cfg.CreateMap<LoginViewModel, UserDTO>();
-                
+                cfg.CreateMap<LoginViewModel, UserDTO>().ForMember(x => x.Name,
+                    x => x.MapFrom(m=>m.UserName)).ForMember(x => x.Password,
+                    x => x.MapFrom(m => m.Password));
+
+                cfg.CreateMap<SkillDTO, SkillViewModel>();
+
+
             });
             _mapper = config.CreateMapper();
 

@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using KnowledgeManagement.DAL.EF;
 using KnowledgeManagement.DAL.Repository;
 
@@ -19,9 +21,9 @@ namespace KnowledgeManagement.DAL.SpecifyingSkill.Repository
             return _db.SpecifyingSkills;
         }
 
-        public Entities.SpecifyingSkill Get(int id)
+        public async Task<Entities.SpecifyingSkill> GetByIdAsync(int id)
         {
-            return _db.SpecifyingSkills.Find(id);
+            return await _db.SpecifyingSkills.FindAsync(id);
         }
 
         public void Create(Entities.SpecifyingSkill specifyingSkill)
@@ -29,15 +31,16 @@ namespace KnowledgeManagement.DAL.SpecifyingSkill.Repository
             _db.SpecifyingSkills.Add(specifyingSkill);
         }
 
-        public void Update(Entities.SpecifyingSkill specifyingSkill)
+        public Task Update(Entities.SpecifyingSkill specifyingSkill)
         {
-            
+            throw new NotImplementedException();
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            Entities.SpecifyingSkill specifyingSkill = _db.SpecifyingSkills.Find(id);
-            _db.SpecifyingSkills.Remove(specifyingSkill);           
+            Entities.SpecifyingSkill specifyingSkill = await _db.SpecifyingSkills.FindAsync(id);
+            if (specifyingSkill != null)
+                _db.SpecifyingSkills.Remove(specifyingSkill);
         }
 
     }

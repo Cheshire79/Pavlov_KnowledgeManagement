@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using KnowledgeManagement.DAL.EF;
 using KnowledgeManagement.DAL.Entities;
 using KnowledgeManagement.DAL.Infrastructure;
@@ -44,13 +44,12 @@ namespace KnowledgeManagement.DAL.Repository
         {
             get { return _specifyingSkillRepository ?? (_specifyingSkillRepository = _factoryRepository.CreateSpecifyingSkillRepository(_db)); }
         }
-
-
-        public void Save()
+  
+        public async Task SaveAsync()
         {
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
-      
+
         public void Dispose()
         {
             _db.Dispose();

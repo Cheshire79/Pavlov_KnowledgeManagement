@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
+using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using KnowledgeManagement.BLL.DTO;
 using KnowledgeManagement.BLL.SpecifyingSkill.DTO;
 using KnowledgeManagement.DAL.Repository;
@@ -13,10 +14,8 @@ namespace KnowledgeManagement.BLL.SpecifyingSkill.Services
         private IUnitOfWork _unitOfWork;
 
         public UserService(IUnitOfWork unitOfWork)
-        {
-                Debug.WriteLine("UserService  start");
+        {            
             _unitOfWork = unitOfWork;
-       
         }
 
         public IQueryable<SkillDTO> Skill()
@@ -31,13 +30,13 @@ namespace KnowledgeManagement.BLL.SpecifyingSkill.Services
 
         public IQueryable<SubSkillDTO> SubSkill(int skillId)
         {
-            return _unitOfWork.SubSkills.GetAll().Where(x=>x.SkillId==skillId).Select(x =>
-                new SubSkillDTO()
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    SkillId = x.SkillId
-                });
+            return _unitOfWork.SubSkills.GetAll().Where(x => x.SkillId == skillId).Select(x =>
+                    new SubSkillDTO()
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        SkillId = x.SkillId
+                    });
         }
         public IQueryable<SubSkillDTO> SubSkill()
         {
@@ -53,29 +52,29 @@ namespace KnowledgeManagement.BLL.SpecifyingSkill.Services
         /// <summary>
         /// Save specifying levels for subSkills. Levels which were not specifyed (has the lowest value as none) are not saved in base att all.
         /// </summary>
-        public void SaveSpecifyingSkill(List<SpecifyingSkillDTO> list,string userId )
+        public async Task SaveSpecifyingSkill(List<SpecifyingSkillDTO> list, string userId)
         {
 
-           var toDelete= _unitOfWork.SpecifyingSkills.GetAll().Where(x => x.UserId == userId).ToList();
-           foreach (var item in toDelete)
+            var toDelete = _unitOfWork.SpecifyingSkills.GetAll().Where(x => x.UserId == userId).ToList();
+            foreach (var item in toDelete)
             {
-                _unitOfWork.SpecifyingSkills.Delete(item.Id);
+                await _unitOfWork.SpecifyingSkills.Delete(item.Id);
             }
-            _unitOfWork.Save();
-            int min = _unitOfWork.Levels.GetAll().Min(x=>x.Order);
-          
+            await _unitOfWork.SaveAsync();
+            int min = _unitOfWork.Levels.GetAll().Min(x => x.Order); // todoAsync
+
             foreach (var item in list)
             {
-                if (_unitOfWork.Levels.Get(item.LevelId).Order > min) // save into base only if skill higher then first 
+                if ((await _unitOfWork.Levels.GetByIdAsync(item.LevelId)).Order > min) // save into base only if skill higher then first 
                     // first level means that user has no experience 
                     _unitOfWork.SpecifyingSkills.Create(new DAL.SpecifyingSkill.Entities.SpecifyingSkill()
                     {
                         LevelId = item.LevelId,
                         SubSkillId = item.SubSkillId,
-                        UserId = userId 
+                        UserId = userId
                     });
             }
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
         }
 
         public IQueryable<SpecifyingSkillDTO> GetSpecifyingSkills()
@@ -92,12 +91,12 @@ namespace KnowledgeManagement.BLL.SpecifyingSkill.Services
 
         public IQueryable<LevelDTO> GetLevels()
         {
-            return _unitOfWork.Levels.GetAll().Select(x => new LevelDTO() { Id = x.Id, Name = x.Name, Order = x.Order }); 
+            return _unitOfWork.Levels.GetAll().Select(x => new LevelDTO() { Id = x.Id, Name = x.Name, Order = x.Order });
         }
 
         public IEnumerable<string> GetUsersIdByCriteria(IEnumerable<SpecifyingSkillForSearchDTO> specifyingSkillsForSearch)
         {
-
+            #region test sample
             //  test sample for problem how to get IQueryable set of userId
             // reason - unable-to-create-a-constant-value-of-type
             //AsQueryable() sence of using ?
@@ -105,22 +104,22 @@ namespace KnowledgeManagement.BLL.SpecifyingSkill.Services
             //https://weblogs.asp.net/dixin/understanding-linq-to-sql-4-data-retrieving-via-query-methods
             //https://stackoverflow.com/questions/18929483/unable-to-create-a-constant-value-of-type-only-primitive-types-or-enumeration-ty
 
-            var t = specifyingSkillsForSearch.ToList();           
+            var t = specifyingSkillsForSearch.ToList();
             IEnumerable<string> usersId2 = (from specifying in _unitOfWork.SpecifyingSkills.GetAll().ToList()
 
                                             join needed in t
                     on specifying.SubSkillId equals needed.SubSkillId
-                where (needed.LevelId == specifying.LevelId)
-                group specifying by specifying.UserId into gr
-                where gr.Count() == t.Count()
-                select gr.Key);
+                                            where (needed.LevelId == specifying.LevelId)
+                                            group specifying by specifying.UserId into gr
+                                            where gr.Count() == t.Count()
+                                            select gr.Key);
 
             var test = usersId2.ToList();
 
 
 
 
-
+            #endregion
 
             int minLevelOrder = GetLevels().OrderBy(x => x.Order).First().Order;
             var needSubSkill = (from needed in specifyingSkillsForSearch
@@ -154,10 +153,10 @@ namespace KnowledgeManagement.BLL.SpecifyingSkill.Services
             return usersId; // todo is it possible to Change into Queryable
                             // does it has sence to use pagging here
         }
-        public int GetIdForMinLevelValue()
+        public async Task<int> GetIdForMinLevelValue()
         {
-            return GetLevels().OrderBy(x => x.Order).First().Id;
-
+            // because of FirstAsync added reference using System.Data.Entity;
+            return (await GetLevels().OrderBy(x => x.Order).FirstAsync()).Id;
         }
         public void Dispose()
         {

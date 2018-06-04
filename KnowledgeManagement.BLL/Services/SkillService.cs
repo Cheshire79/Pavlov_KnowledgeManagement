@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using KnowledgeManagement.BLL.DTO;
 using KnowledgeManagement.DAL.Entities;
@@ -9,8 +7,8 @@ using KnowledgeManagement.DAL.Repository;
 
 namespace KnowledgeManagement.BLL.Services
 {
-  
-    class SkillService : ISkillService 
+
+    class SkillService : ISkillService
     {
         private IUnitOfWork _unitOfWork;
 
@@ -23,31 +21,31 @@ namespace KnowledgeManagement.BLL.Services
             return _unitOfWork.Skills.GetAll().Select(x => new SkillDTO() { Id = x.Id, Name = x.Name }); ;
         }
 
-        public SkillDTO Get(int id)
+        public async Task<SkillDTO> GetByIdAsync(int id) //todo map
         {
-            var skill = _unitOfWork.Skills.Get(id);
+            var skill = await _unitOfWork.Skills.GetByIdAsync(id);
             if (skill != null)
-                return new SkillDTO() { Name = skill.Name, Id = skill.Id };         
+                return new SkillDTO() { Name = skill.Name, Id = skill.Id };
             throw new ArgumentException("There is no skill with id " + id);
 
         }
 
-        public void Create(SkillDTO skill)
+        public async Task Create(SkillDTO skill)
         {
-            _unitOfWork.Skills.Create(new Skill() { Name = skill.Name });
-            _unitOfWork.Save();
+            _unitOfWork.Skills.Create(new Skill() { Name = skill.Name }); // do need to be async ?
+            await _unitOfWork.SaveAsync();
         }
 
-        public void Update(SkillDTO skillDTO)
-        {          
-            _unitOfWork.Skills.Update(new Skill(){Id = skillDTO.Id, Name = skillDTO.Name});
-            _unitOfWork.Save();
+        public async Task Update(SkillDTO skillDTO)
+        {
+            await _unitOfWork.Skills.Update(new Skill() { Id = skillDTO.Id, Name = skillDTO.Name });
+            await _unitOfWork.SaveAsync();
         }
 
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            _unitOfWork.Skills.Delete(id);
-            _unitOfWork.Save();
+            await _unitOfWork.Skills.Delete(id);
+            await _unitOfWork.SaveAsync();
         }
         public void Dispose()
         {

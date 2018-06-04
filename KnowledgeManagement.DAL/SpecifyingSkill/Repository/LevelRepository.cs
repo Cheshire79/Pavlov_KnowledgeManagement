@@ -1,5 +1,5 @@
-﻿
-using System.Linq;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using KnowledgeManagement.DAL.EF;
 using KnowledgeManagement.DAL.SpecifyingSkill.Entities;
 
@@ -13,18 +13,16 @@ namespace KnowledgeManagement.DAL.SpecifyingSkill.Repository
         public LevelReadOnlyRepository(IDataContext context)
         {
             _db = context;
-
         }
 
         public IQueryable<Level> GetAll()
         {
             return _db.Levels;
         }
-
-        public Level Get(int id)
-        {
-            return _db.Levels.Find(id);
+        
+        public async Task<Level> GetByIdAsync(int id)
+        {                      
+            return await _db.Levels.FindAsync(id);
         }       
-
     }
 }

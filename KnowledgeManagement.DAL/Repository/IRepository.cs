@@ -1,5 +1,6 @@
 ﻿
 using System.Linq;
+using System.Threading.Tasks;
 
 
 namespace KnowledgeManagement.DAL.Repository
@@ -7,9 +8,10 @@ namespace KnowledgeManagement.DAL.Repository
     public interface IRepository<T> where T : class
     {
         IQueryable<T> GetAll();
-        T Get(int id);
+        
+        Task<T> GetByIdAsync(int id);
         void Create(T item);
-        void Update(T item);
-        void Delete(int id);
+        Task Update(T item);
+        Task Delete(int id);
     }
 }

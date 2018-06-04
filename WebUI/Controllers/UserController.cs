@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -18,26 +17,22 @@ namespace WebUI.Controllers
         public UserController(IUserService managerService)
         {
             _userService = managerService;
-        }
-
-       
-       
+        }      
 
         [Authorize(Roles = "user")]
         public async Task<ActionResult> IndexQ()
         {
             SpecifyingSkillsViewModel_Queryable specifyingSkillsViewModel1 = new SpecifyingSkillsViewModel_Queryable();
-            await Task.Run(() =>
-            {
+           
                 string currentUserId = HttpContext.User.Identity.GetUserId();
-                int minLevelId = _userService.GetLevels().OrderBy(x => x.Order).First().Id;
+                int minLevelId = (await _userService.GetLevels().OrderBy(x => x.Order).FirstAsync()).Id;
 
-                specifyingSkillsViewModel1.LevelsViewModel = _userService.GetLevels().OrderBy(x => x.Order)
+                specifyingSkillsViewModel1.LevelsViewModel = await _userService.GetLevels().OrderBy(x => x.Order)
                     .Select(x => new LevelViewModel()
                     {
                         Id = x.Id,
                         Name = x.Name
-                    }).ToList(); // todo
+                    }).ToListAsync(); // todo
 
                 specifyingSkillsViewModel1.SpecifyingSkills =
                     from s in _userService.Skill()
@@ -83,7 +78,7 @@ namespace WebUI.Controllers
                 //left join SubSkills on skills.Id=SubSkills.SkillId
                 //left join  SpecifyingSkills on SpecifyingSkills.SubSkillId=SubSkills.Id 
 
-            });
+         
             return View(specifyingSkillsViewModel1);
 
         }
@@ -91,8 +86,7 @@ namespace WebUI.Controllers
         [Authorize(Roles = "user")]
         public async Task<ActionResult> IndexQ(SpecifyingSkillsSaveModel specifyingSkillsViewModel)
         {
-            await Task.Run(() =>
-            {
+           
                 if (ModelState.IsValid)
                 {
                     string currentUserId = HttpContext.User.Identity.GetUserId();
@@ -103,14 +97,13 @@ namespace WebUI.Controllers
                                 {
                                     SubSkillId = y.SubSkillViewModel.Id,
                                     LevelId = y.Level.Id //, UserId = currentUserId 
-                                }).ToList();
-                    _userService.SaveSpecifyingSkill(result, currentUserId);
+                                }).ToList();// todo remove list
+                   await _userService.SaveSpecifyingSkill(result, currentUserId);
                 }
-            });
+          
             return RedirectToAction("Index", "Home");
         }
         
-
 
         protected override void Dispose(bool disposing)
         {

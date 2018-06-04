@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using KnowledgeManagement.BLL.DTO;
 
 namespace KnowledgeManagement.BLL.Services
@@ -8,11 +9,13 @@ namespace KnowledgeManagement.BLL.Services
     {
 
         IQueryable<SubSkillDTO> GetAll();
-        SubSkillDTO Get(int id);
+        Task<SubSkillDTO> GetByIdAsync(int id);
 
-        void Create(SubSkillDTO skillDTO);
-        void Update(SubSkillDTO skillDTO);
-        void Delete(int id);
-        IQueryable<SubSkillDTO> GetSubSkillBySkillId(int id);
+        Task Create(SubSkillDTO skillDTO);
+        Task Update(SubSkillDTO skillDTO);
+        Task Delete(int id);
+        Task<IQueryable<SubSkillDTO>> GetSubSkillBySkillId(int id);
+
+
     }
 }

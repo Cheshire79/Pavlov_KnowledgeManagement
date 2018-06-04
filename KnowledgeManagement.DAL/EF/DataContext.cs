@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Diagnostics;
+﻿using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using KnowledgeManagement.DAL.Entities;
 using KnowledgeManagement.DAL.SpecifyingSkill.Entities;
 
@@ -26,9 +21,8 @@ namespace KnowledgeManagement.DAL.EF
         static DataContext()
         {
             Database.SetInitializer<DataContext>(new StoreDbInitializer());
-        }
-        
-       
+        }       
+
     }
 
     public class StoreDbInitializer : DropCreateDatabaseIfModelChanges<DataContext>
@@ -78,6 +72,7 @@ namespace KnowledgeManagement.DAL.EF
                     Name = "Oracle"
                 });              
             }
+            db.SaveChanges();
         }
     }
 

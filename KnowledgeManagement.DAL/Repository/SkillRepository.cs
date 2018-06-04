@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using KnowledgeManagement.DAL.EF;
 using KnowledgeManagement.DAL.Entities;
 
 
 namespace KnowledgeManagement.DAL.Repository
 {
-
     public class SkillRepository : IRepository<Skill>
     {
         private IDataContext _db;
@@ -14,11 +15,6 @@ namespace KnowledgeManagement.DAL.Repository
         public SkillRepository(IDataContext context)
         {
             _db = context;
-            //Skill t1 = new Skill { Name = "test" };
-           
-            //_db.Skills.Add(t1);
-            //_db.SaveChanges();
-
         }
 
         public IQueryable<Skill> GetAll()
@@ -26,37 +22,34 @@ namespace KnowledgeManagement.DAL.Repository
             return _db.Skills;
         }
 
-        public Skill Get(int id)
+        public async Task<Skill> GetByIdAsync(int id)
         {
-            return _db.Skills.Find(id);
+            return await _db.Skills.FindAsync(id);
         }
 
         public void Create(Skill skill)
         {
-            _db.Skills.Add(skill);           
+            _db.Skills.Add(skill);
         }
 
-        public void Update(Skill skill)
+        public async Task Update(Skill skill)
         {
-            var originSkill = _db.Skills.Find(skill.Id);
+            var originSkill = await _db.Skills.FindAsync(skill.Id);
             if (originSkill == null)
                 throw new ArgumentException("Skill was not updated. Cannot find skill with Id = " + skill.Id);
-            originSkill.Name = skill.Name;          
+            originSkill.Name = skill.Name;
         }
 
-        public void Delete(int id)
-        {            
-            Skill skill= _db.Skills.Find(id);
+        public async Task Delete(int id)
+        {
+            Skill skill = await _db.Skills.FindAsync(id);
             if (skill == null)
                 throw new ArgumentException("Skill was not deleted. Cannot find skill with indicated ID");
 
-            var subSkills=_db.SubSkills.Where(x => x.SkillId == id);
-            foreach (var items in subSkills)
-            {
-                _db.SubSkills.Remove(items);
-            }
+            var subSkills = await _db.SubSkills.Where(x => x.SkillId == id).ToListAsync();
+            foreach (var items in subSkills) // todo is it possible to use async here            
+                _db.SubSkills.Remove(items);            
             _db.Skills.Remove(skill);
-          
         }
 
     }

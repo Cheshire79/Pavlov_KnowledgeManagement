@@ -1,44 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using AutoMapper;
 using KnowledgeManagement.BLL.DTO;
 using KnowledgeManagement.BLL.Services;
+using WebUI.Mapper;
 using WebUI.Models.KnowledgeManagement;
 
 namespace WebUI.Controllers
 {
     public class ManagerSkillController : Controller
     {
-        //
-        // GET: /Manager/
 
-        //  private IManagerService _managerService;
         private ISubSkillService _subSkillService;
         private ISkillService _skillService;
+        private IMapper _mapper;
 
-        public ManagerSkillController(ISubSkillService subSkillService, ISkillService skillService)
+        public ManagerSkillController(ISubSkillService subSkillService, ISkillService skillService, IMapperFactoryWEB mapperFactory)
         {
             _subSkillService = subSkillService;
             _skillService = skillService;
-
+            _mapper = mapperFactory.CreateMapperWEB();
         }
-
 
         #region Skill
         [Authorize(Roles = "manager")]
         public async Task<ActionResult> Skills(string message)
         {
             TempData["message"] = message;
-            IEnumerable<SkillViewModel> viewModel =
-                await Task.Run(() =>
-
-                _skillService.GetAll().OrderBy(x => x.Name).Select(x => new SkillViewModel
-                {
-                    Name = x.Name,
-                    Id = x.Id
-                }));
+            IEnumerable<SkillViewModel> viewModel = _mapper.Map<IEnumerable<SkillDTO>, IEnumerable<SkillViewModel>>
+            (await _skillService.GetAll().OrderBy(x => x.Name).ToListAsync());
 
             return View(viewModel);
         }
@@ -46,16 +40,12 @@ namespace WebUI.Controllers
         [Authorize(Roles = "manager")]
         public ActionResult CreateSkill(string returnUrl)
         {
-            SkillViewModel skillViewModel =
-
-
-                   new SkillViewModel()
-                   {
-                       ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Skills") : returnUrl
-                   };
+            SkillViewModel skillViewModel = new SkillViewModel()
+            {
+                ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Skills") : returnUrl
+            };
 
             return View(skillViewModel);
-
         }
 
         [HttpPost]
@@ -63,9 +53,8 @@ namespace WebUI.Controllers
         public async Task<ActionResult> CreateSkill(SkillViewModel model)
         {
             if (ModelState.IsValid)
-            {
-                await Task.Run(() =>
-               _skillService.Create(new SkillDTO() { Name = model.Name }));
+            {                
+               await _skillService.Create(new SkillDTO() { Name = model.Name });
             }
             return RedirectToAction("Skills"); // todo to last pages
         }
@@ -75,12 +64,9 @@ namespace WebUI.Controllers
         [Authorize(Roles = "manager")]
         public async Task<ActionResult> DeleteSkill(int id, string returnUrl)
         {
-
             try
             {
-                await Task.Run(() =>
-                 _skillService.Delete(id)
-                 );
+                await _skillService.Delete(id);
                 string temp = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Skills") : returnUrl;
                 return Redirect(temp);
             }
@@ -88,10 +74,9 @@ namespace WebUI.Controllers
             catch (Exception ex)
             {
                 return HttpNotFound(ex.Message);
-                //   return RedirectToAction("Skills", new {ex.Message}); // todo to last pages
             }
+            //   return RedirectToAction("Skills", new {ex.Message}); // todo to last pages
 
-            // todo to last pages
         }
 
         [Authorize(Roles = "manager")]
@@ -101,25 +86,20 @@ namespace WebUI.Controllers
                 return HttpNotFound("Missed id value");
             try
             {
-                SkillViewModel skillViewModel =
-               await Task.Run(() =>
-               {
-                   var skill = _skillService.Get(id.Value);
-                   return new SkillViewModel()
-                   {
-                       Id = skill.Id,
-                       Name = skill.Name,
-                       ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Skills") : returnUrl
-                   };
-               });
+                var skill = await _skillService.GetByIdAsync(id.Value);
+                SkillViewModel skillViewModel = new SkillViewModel()
+                {
+                    Id = skill.Id,
+                    Name = skill.Name,
+                    ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Skills") : returnUrl
+                };
                 return View(skillViewModel);
             }
             catch (Exception ex)
             {
                 return HttpNotFound(ex.Message);
-                //   return RedirectToAction("Skills", new {ex.Message}); // todo to last pages
-
             }
+            //   return RedirectToAction("Skills", new {ex.Message}); // todo to last pages
         }
 
         [HttpPost]
@@ -130,14 +110,11 @@ namespace WebUI.Controllers
             {
                 try
                 {
-                    await Task.Run(() =>
-                        _skillService.Update(new SkillDTO() { Id = model.Id, Name = model.Name }));
+                    await _skillService.Update(new SkillDTO() { Id = model.Id, Name = model.Name });
                 }
-
                 catch (Exception ex)
                 {
                     return HttpNotFound(ex.Message);
-                    //   return RedirectToAction("Skills", new {ex.Message}); // todo to last pages
                 }
             }
             return RedirectToAction("Skills"); // todo to last pages
@@ -146,31 +123,28 @@ namespace WebUI.Controllers
         [Authorize(Roles = "manager")]
         public async Task<ActionResult> EditSubSkills(int? skillId, string returnUrl)
         {
-
             if (skillId == null)
                 return HttpNotFound("Missed id value");
             try
             {
                 SubSkillListViewModel subSkillListViewModel =
-               await Task.Run(() =>
                        new SubSkillListViewModel()
                        {
-                           SubSkillsViewModel = _subSkillService.GetSubSkillBySkillId(skillId.Value)
+                           SubSkillsViewModel = (await _subSkillService.GetSubSkillBySkillId(skillId.Value))
                                .Select(x => new SubSkillViewModel() { Id = x.Id, Name = x.Name, SkillId = x.SkillId }),
                            SkillViewModel = new SkillViewModel()
                            {
                                Id = skillId.Value,
-                               Name = _skillService.Get(skillId.Value).Name
+                               Name = (await _skillService.GetByIdAsync(skillId.Value)).Name
                            },
                            ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Skills") : returnUrl
-                       });
+                       };
                 return View(subSkillListViewModel);
             }
             catch (Exception ex)
             {
                 return HttpNotFound(ex.Message);
                 // todo to last pages
-
             }
         }
 
@@ -184,16 +158,13 @@ namespace WebUI.Controllers
                 return HttpNotFound("Missed id value");
             try
             {
+                var skill = await _skillService.GetByIdAsync(skillId.Value);
                 SubSkillViewModel subSkillViewModel =
-               await Task.Run(() =>
-               {
-                   var skill = _skillService.Get(skillId.Value);
-                   return new SubSkillViewModel()
-                   {
-                       SkillId = skill.Id,                       
-                       ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("EditSubSkills", new { skillId }) : returnUrl
-                   };
-               });
+                    new SubSkillViewModel()
+                    {
+                        SkillId = skill.Id,
+                        ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("EditSubSkills", new { skillId }) : returnUrl
+                    };
                 return View(subSkillViewModel);
             }
             catch (Exception ex)
@@ -207,19 +178,15 @@ namespace WebUI.Controllers
         [Authorize(Roles = "manager")]
         public async Task<ActionResult> CreateSubSkill(SubSkillViewModel model)
         {
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await Task.Run(() =>
-                        _subSkillService.Create(new SubSkillDTO() { SkillId = model.SkillId, Name = model.Name }));
+                    await _subSkillService.Create(new SubSkillDTO() { SkillId = model.SkillId, Name = model.Name });
                 }
                 catch (Exception ex)
                 {
                     return HttpNotFound(ex.Message);
-                    //   return RedirectToAction("Skills", new {ex.Message}); // todo to last pages
-
                 }
             }
             return RedirectToAction("EditSubSkills", new { model.SkillId }); // todo to last pages
@@ -233,14 +200,13 @@ namespace WebUI.Controllers
         {
             try
             {
-                await Task.Run(() =>
-                 _subSkillService.Delete(subSkillid));
-                return Redirect(string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Skill") : returnUrl);
+
+                await _subSkillService.Delete(subSkillid);
+                return Redirect(string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Skills") : returnUrl);
             }
             catch (Exception ex)
             {
                 return HttpNotFound(ex.Message);
-                // todo to last pages
             }
             // todo to last pages
         }
@@ -252,26 +218,21 @@ namespace WebUI.Controllers
                 return HttpNotFound("Missed id value");
             try
             {
+                var subSkill = await _subSkillService.GetByIdAsync(subSkillId.Value);
                 SubSkillViewModel subSkillViewModel =
-               await Task.Run(() =>
-               {
-                   var subSkill = _subSkillService.Get(subSkillId.Value);
-
-                   return new SubSkillViewModel()
-                   {
-                       Id = subSkill.Id,
-                       SkillId = subSkill.SkillId,
-                       Name = subSkill.Name,
-                       ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("EditSubSkills", new { subSkill.SkillId }) : returnUrl                       
-                   };
-               });
+                    new SubSkillViewModel()
+                    {
+                        Id = subSkill.Id,
+                        SkillId = subSkill.SkillId,
+                        Name = subSkill.Name,
+                        ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("EditSubSkills", new { subSkill.SkillId }) : returnUrl
+                    };
                 return View(subSkillViewModel);
             }
             catch (Exception ex)
             {
                 return HttpNotFound(ex.Message);
                 //   return RedirectToAction("Skills", new {ex.Message}); // todo to last pages
-
             }
         }
 
@@ -284,19 +245,15 @@ namespace WebUI.Controllers
             {
                 try
                 {
-                    await Task.Run(() =>
-                        _subSkillService.Update(new SubSkillDTO() { Id = model.Id, Name = model.Name, SkillId = model.SkillId }));
+                    await _subSkillService.Update(new SubSkillDTO() { Id = model.Id, Name = model.Name, SkillId = model.SkillId });
                 }
-
                 catch (Exception ex)
                 {
                     return HttpNotFound(ex.Message);
-                    //   return RedirectToAction("Skills", new {ex.Message}); // todo to last pages
                 }
             }
             return Redirect(model.ReturnUrl); // todo to last pages
         }
-
 
         #endregion
 

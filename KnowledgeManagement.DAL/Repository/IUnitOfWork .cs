@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using KnowledgeManagement.DAL.Entities;
 using KnowledgeManagement.DAL.SpecifyingSkill.Entities;
 using KnowledgeManagement.DAL.SpecifyingSkill.Repository;
@@ -13,6 +14,6 @@ namespace KnowledgeManagement.DAL.Repository
       
         IReadOnlyRepository<Level> Levels { get; }
         IRepository<SpecifyingSkill.Entities.SpecifyingSkill> SpecifyingSkills { get; }
-        void Save();
+        Task SaveAsync();
     }
 }
