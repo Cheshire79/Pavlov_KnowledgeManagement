@@ -52,7 +52,6 @@
   <ItemGroup>
     <Compile Include="DTO\SkillDTO.cs" />
     <Compile Include="DTO\SubSkillDTO.cs" />
-    <Compile Include="Infrastructure\MapperKnowledgeManagementProfile.cs" />
     <Compile Include="Infrastructure\ServiceModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ISkillService.cs" />

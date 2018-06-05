@@ -82,12 +82,8 @@ namespace WebUI.Controllers
             await _identityService.SetInitialData();          
             if (ModelState.IsValid)
             {
-                UserDTO userDto = new UserDTO
-                {
-                    Password = model.Password,
-                    Name = model.UserName,
-                    RoleByDefault = "user"
-                };
+                UserDTO userDto=_mapper.Map<RegisterViewModel, UserDTO>(model);
+                userDto.RoleByDefault = "user";                
                 OperationDetails operationDetails = await _identityService.Create(userDto);
                 if (operationDetails.Succedeed)
                 {

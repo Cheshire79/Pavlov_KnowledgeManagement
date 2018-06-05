@@ -26,6 +26,11 @@ namespace WebUI.Mapper
                     x => x.MapFrom(m=>m.UserName)).ForMember(x => x.Password,
                     x => x.MapFrom(m => m.Password));
 
+                cfg.CreateMap<RegisterViewModel, UserDTO>().ForMember(x => x.Name,
+                    x => x.MapFrom(m => m.UserName)).ForMember(x => x.Password,
+                    x => x.MapFrom(m => m.Password));
+                
+
                 cfg.CreateMap<SkillDTO, SkillViewModel>();
 
 

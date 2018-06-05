@@ -4,9 +4,12 @@ using System.Data.Entity;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using BLL.Identity.DTO;
 using BLL.Identity.Services.Interfaces;
 using BLL.Identity.Validation;
+using BLL.Mapper;
 using DAL.Identity.Entities;
 using DAL.Identity.Interfaces;
 using Microsoft.AspNet.Identity;
@@ -17,10 +20,12 @@ namespace BLL.Identity.Services
     {
         private string adminRoleName = "admin";
         private IIdentityUnitOfWork _unitOfWork { get; set; }
+        private IMapper _mapper;
 
-        public IdentityService(IIdentityUnitOfWork uow)
+        public IdentityService(IIdentityUnitOfWork uow, IMapperFactory mapperFactory)
         {
             _unitOfWork = uow;
+            _mapper = mapperFactory.CreateMapper();
         }
 
         public async Task<OperationDetails> Create(UserDTO userDto)
@@ -28,8 +33,9 @@ namespace BLL.Identity.Services
             ApplicationUser user = await _unitOfWork.UserManager.FindByNameAsync(userDto.Name);
             if (user == null)
             {
-                user = new ApplicationUser { UserName = userDto.Name };
-                await _unitOfWork.UserManager.CreateAsync(user, userDto.Password);               
+                user = _mapper.Map<UserDTO, ApplicationUser>(userDto);
+                user.Id = new ApplicationUser().Id;
+                await _unitOfWork.UserManager.CreateAsync(user, userDto.Password);
                 await _unitOfWork.UserManager.AddToRoleAsync(user.Id, userDto.RoleByDefault);
                 await _unitOfWork.SaveAsync();
                 return new OperationDetails(true, "Registration successfully passed", "");
@@ -40,24 +46,25 @@ namespace BLL.Identity.Services
             }
         }
 
-        public async Task<ClaimsIdentity> Authenticate(UserDTO userDto) //todo
+        public async Task<ClaimsIdentity> Authenticate(UserDTO userDto)
         {
             ClaimsIdentity claim = null;
             ApplicationUser user = await _unitOfWork.UserManager.FindAsync(userDto.Name, userDto.Password);
-                     if (user != null)
+            if (user != null)
                 claim = await _unitOfWork.UserManager.CreateIdentityAsync(user,
                     DefaultAuthenticationTypes.ApplicationCookie);
             return claim;
         }
-       
+
+
         public IQueryable<UserDTO> GetUsers()
         {
-            return _unitOfWork.UserManager.Users.Select(x => new UserDTO() { Id = x.Id, Name = x.UserName });
+            return _unitOfWork.UserManager.Users.ProjectTo<UserDTO>(_mapper.ConfigurationProvider);
         }
 
         public IQueryable<RoleDTO> GetRoles()
         {
-            return _unitOfWork.RoleManager.Roles.Select(x => new RoleDTO() { Id = x.Id, Name = x.Name });
+            return _unitOfWork.RoleManager.Roles.ProjectTo<RoleDTO>(_mapper.ConfigurationProvider);
         }
 
         public async Task<OperationDetails> ChangePassword(string userId, string oldPassword, string newPassword)
@@ -77,38 +84,30 @@ namespace BLL.Identity.Services
         public async Task<RoleDTO> FindRoleByIdAsync(string id)
         {
             var role = await _unitOfWork.RoleManager.FindByIdAsync(id);
-           
-            return new RoleDTO { Id = role.Id, Name = role.Name };
+            return _mapper.Map<ApplicationRole, RoleDTO>(role);
         }
 
         public async Task<IQueryable<UserDTO>> GetUsersInRoleAsync(string roleId)
         {
- 
+
             var role = await _unitOfWork.RoleManager.Roles.FirstOrDefaultAsync(r => r.Id == roleId);
-                if (role != null)
-                {
-                    return from user in _unitOfWork.UserManager.Users
-                           where user.Roles.Any(r => r.RoleId == roleId)
-                           select new UserDTO()
-                           {
-                               Id = user.Id,
-                               Name = user.UserName
-                           };
-                }
-                return _unitOfWork.UserManager.Users.Select(x => new UserDTO()
-                {
-                    Id = x.Id,
-                    Name = x.UserName
-                });
-           
+            if (role != null)
+            {
+                return (from user in _unitOfWork.UserManager.Users
+                        where user.Roles.Any(r => r.RoleId == roleId)
+                        select user).ProjectTo<UserDTO>(_mapper.ConfigurationProvider);
+            }
+            return _unitOfWork.UserManager.Users.ProjectTo<UserDTO>(_mapper.ConfigurationProvider);
+
         }
 
         public async Task<OperationDetails> AddUserToRoleAsync(string userId, string roleId)
         {
             //todo remove Operation details
             var role = await FindRoleByIdAsync(roleId);
-            if (role==null)
+            if (role == null)
                 throw new ArgumentException("There is no role with id " + roleId);
+            // need to do the same with user ?
             var added = await _unitOfWork.UserManager.AddToRoleAsync(userId, role.Name);
             try
             {
@@ -116,9 +115,9 @@ namespace BLL.Identity.Services
             }
             catch (Exception ex)
             {
-                throw new ArgumentException("Cannot add user with id="+userId+" to role with id=" + roleId);                
+                throw new ArgumentException("Cannot add user with id=" + userId + " to role with id=" + roleId);
             }
-            
+
             if (added.Succeeded)
             {
                 return new OperationDetails(true, "user was added", "");
@@ -141,17 +140,18 @@ namespace BLL.Identity.Services
                     await _unitOfWork.RoleManager.CreateAsync(role);
                 }
             }
-            var userDto = new UserDTO() { Name = "Admin", Password = "111111" };       
+            var userDto = new UserDTO() { Name = "Admin", Password = "111111" };
 
             ApplicationUser user = await _unitOfWork.UserManager.FindByNameAsync(userDto.Name);
             if (user == null)
             {
-                user = new ApplicationUser { UserName = userDto.Name };
+                user = _mapper.Map<UserDTO, ApplicationUser>(userDto);
+                user.Id = new ApplicationUser().Id;
                 var result = await _unitOfWork.UserManager.CreateAsync(user, userDto.Password);
 
                 if (result.Succeeded)
-                    await _unitOfWork.UserManager.AddToRoleAsync(user.Id, adminRoleName); 
-                await _unitOfWork.SaveAsync();              
+                    await _unitOfWork.UserManager.AddToRoleAsync(user.Id, adminRoleName);
+                await _unitOfWork.SaveAsync();
             }
 
             await _unitOfWork.SaveAsync();
