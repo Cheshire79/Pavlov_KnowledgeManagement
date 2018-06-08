@@ -1,4 +1,5 @@
-﻿
+﻿// how to rename classes so the changes accepted in viewes files
+//   await Task.Run(() => todo what is the sence of this ?
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -11,6 +12,8 @@ using BLL.Identity.Validation;
 using Microsoft.AspNet.Identity;
 using WebUI.Mapper;
 using WebUI.Models;
+using WebUI.Models.UsersAndRoles;
+
 namespace WebUI.Controllers
 {
     public class AdminController : Controller
@@ -23,17 +26,15 @@ namespace WebUI.Controllers
         {
             _identityService = identityService;
             _mapper = mapperFactory.CreateMapperWEB();
-            //   await Task.Run(() => todo what is the sence of this ?
         }
-
 
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> Users(int page = 1)
         {
-            UsersListViewModel viewModel =
-                     new UsersListViewModel
+            UsersViewModel viewModel =
+                     new UsersViewModel
                      {
-                         UserViewModels = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<UserViewModel>>(await _identityService.GetUsers().
+                         Users = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<UserViewModel>>(await _identityService.GetUsers().
                 OrderBy(x => x.Name).Skip((page - 1) * PageSize)
                .Take(PageSize).ToListAsync()),
                          PagingInfo = new PagingInfo
@@ -49,11 +50,10 @@ namespace WebUI.Controllers
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> Roles(string roleId, int page = 1)// todo can be added field for search
         {
-
             IQueryable<UserDTO> users = await _identityService.GetUsersInRoleAsync(roleId);
-            UsersListForRolesViewModel viewModel = new UsersListForRolesViewModel
+            UsersInRoleViewModel viewModel = new UsersInRoleViewModel
             {
-                UserViewModels = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<UserViewModel>>(
+                Users = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<UserViewModel>>(
                                         await users.OrderBy(x => x.Name).Skip((page - 1) * PageSize).Take(PageSize).ToListAsync()
                                                ),
                 PagingInfo = new PagingInfo
@@ -62,7 +62,7 @@ namespace WebUI.Controllers
                     ItemsPerPage = PageSize,
                     TotalItems = await users.CountAsync()
                 },
-                CurrentRoleId = roleId
+                RoleId = roleId
             };
             return View(viewModel);
         }
@@ -75,7 +75,7 @@ namespace WebUI.Controllers
         {
             RolesMenuViewModel rolesMenu = new RolesMenuViewModel()
             {
-                RoleList = _mapper.Map<IEnumerable<RoleDTO>, IEnumerable<RoleViewModel>>
+                Roles = _mapper.Map<IEnumerable<RoleDTO>, IEnumerable<RoleViewModel>>
                                         (
                                 _identityService.GetRoles().OrderBy(x => x.Name)
                                         ),
@@ -92,9 +92,9 @@ namespace WebUI.Controllers
             if (role != null)
                 ViewData["RoleName"] = role.Name;
             var usersInRole = await _identityService.GetUsersInRoleAsync(roleId);
-            UsersListForAddingToRolesViewModel viewModel = new UsersListForAddingToRolesViewModel
+            UsersForAddingIntoRoleViewModel viewModel = new UsersForAddingIntoRoleViewModel
             {
-                UserViewModels = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<UserViewModel>>
+                Users = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<UserViewModel>>
                                         (
                             await _identityService.GetUsers().Except(usersInRole).OrderBy(x => x.Name)
                             .Skip((page - 1) * PageSize).Take(PageSize).ToListAsync()
@@ -105,9 +105,8 @@ namespace WebUI.Controllers
                     ItemsPerPage = PageSize,
                     TotalItems = await _identityService.GetUsers().Except(usersInRole).CountAsync()
                 },
-                CurrentRoleId = roleId,
+                RoleId = roleId,
                 ReturnUrl = returnUrl
-
             };
             return View(viewModel);
         }

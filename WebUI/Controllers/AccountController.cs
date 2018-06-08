@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
 using BLL.Identity.DTO;
-using BLL.Identity.Services;
+usi
 using BLL.Identity.Services.Interfaces;
 using BLL.Identity.Validation;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using WebUI.Mapper;
-using WebUI.Models;
+using WebUI.Models.UsersAndRoles;
 
 
 namespace WebUI.Controllers
@@ -21,7 +18,6 @@ namespace WebUI.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-
         private IIdentityService _identityService;
         private IMapper _mapper;
 
@@ -38,17 +34,16 @@ namespace WebUI.Controllers
             return View();
         }
 
-  
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public async Task<ActionResult> Login(UserLoginViewModel model, string returnUrl)
         {
             await _identityService.SetInitialData();    
           
             if (ModelState.IsValid)
             {
-                UserDTO userDto = _mapper.Map<LoginViewModel, UserDTO> (model);
+                UserDTO userDto = _mapper.Map<UserLoginViewModel, UserDTO> (model);
                 if (await TryToSignInAsync(userDto, model.RememberMe))
                     return RedirectToLocal(returnUrl);
                 ModelState.AddModelError("", "Invalid username or password.");
@@ -73,16 +68,15 @@ namespace WebUI.Controllers
             return View();
         }
 
-
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(UserRegisterViewModel model)
         {
             await _identityService.SetInitialData();          
             if (ModelState.IsValid)
             {
-                UserDTO userDto=_mapper.Map<RegisterViewModel, UserDTO>(model);
+                UserDTO userDto=_mapper.Map<UserRegisterViewModel, UserDTO>(model);
                 userDto.RoleByDefault = "user";                
                 OperationDetails operationDetails = await _identityService.Create(userDto);
                 if (operationDetails.Succedeed)
@@ -93,7 +87,6 @@ namespace WebUI.Controllers
                 else
                     ModelState.AddModelError(operationDetails.Property, operationDetails.Message);
             }
-
             return View(model);
         }
 
@@ -106,7 +99,7 @@ namespace WebUI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Manage(ManageUserViewModel model)
+        public async Task<ActionResult> Manage(UserEditViewModel model)
         {                    
             ViewBag.ReturnUrl = Url.Action("Manage");           
             {
@@ -137,7 +130,6 @@ namespace WebUI.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-
         private IAuthenticationManager AuthenticationManager
         {
             get
@@ -157,8 +149,7 @@ namespace WebUI.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
-   
-    
+
         protected override void Dispose(bool disposing)
         {           
                 _identityService.Dispose();

@@ -1,4 +1,4 @@
-﻿@model WebUI.Models.UsersListForAddingToRolesViewModel
+﻿@model WebUI.Models.UsersAndRoles.UsersForAddingIntoRoleViewModel
 
 @using WebUI.HtmlHelpers
 
@@ -26,17 +26,15 @@
         <div class="Message">@TempData["message"]</div>
     }
 
-
     <table class="table">
         <tr>
             <th>
-                <!--            Html.DisplayNameFor(x => x.UserViewModels =>)-->
                 Name
             </th>
             <th></th>
         </tr>
 
-        @foreach (var item in Model.UserViewModels)
+        @foreach (var item in Model.Users)
         {
             <tr>
                 <td>
@@ -45,7 +43,7 @@
                 <td>
                     @using (Html.BeginForm("AddUsersForRole", "Admin"))
                     {
-                        @Html.Hidden("roleId", Model.CurrentRoleId)
+                        @Html.Hidden("roleId", Model.RoleId)
                         @Html.Hidden("userId", item.Id)
                         @Html.Hidden("returnUrl", Model.ReturnUrl)
                         <input type="submit" value="Add" />
@@ -57,7 +55,7 @@
 
     <div class="pager">
         @Html.PageLinks(Model.PagingInfo, x => Url.Action("AddUsersForRole",
-        new { roleId = Model.CurrentRoleId, page = x, returnUrl = Model.ReturnUrl }))
+        new { roleId = Model.RoleId, page = x, returnUrl = Model.ReturnUrl }))
     </div>
 </div>
 

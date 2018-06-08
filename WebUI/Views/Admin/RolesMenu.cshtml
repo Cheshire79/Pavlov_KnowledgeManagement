@@ -1,8 +1,8 @@
-﻿@model WebUI.Models.RolesMenuViewModel
+﻿@model WebUI.Models.UsersAndRoles.RolesMenuViewModel
 @Html.ActionLink("All Users",  "Roles","Admin")
 
 
-@foreach (var link in Model.RoleList)
+@foreach (var link in Model.Roles)
 {    
     @Html.RouteLink(link.Name, new
     {
@@ -16,3 +16,4 @@
   })
 }
 
+ 

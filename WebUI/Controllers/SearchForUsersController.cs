@@ -9,9 +9,9 @@ using KnowledgeManagement.BLL.SpecifyingSkill.DTO;
 using KnowledgeManagement.BLL.SpecifyingSkill.Services;
 using Rotativa.MVC;
 using WebUI.Mapper;
-using WebUI.Models;
 using WebUI.Models.KnowledgeManagement;
 using WebUI.Models.SearchForUsers;
+using WebUI.Models.UsersAndRoles;
 
 namespace WebUI.Controllers
 {
@@ -31,8 +31,6 @@ namespace WebUI.Controllers
         public async Task<ActionResult> Index()
         {
             SpecifyingSkillsForSearchViewModel specifyingSkillsViewModel1 = new SpecifyingSkillsForSearchViewModel();
-
-
             int minLevelId = (await _userService.GetLevels().OrderBy(x => x.Order).FirstAsync()).Id; // todo to service ?
 
             specifyingSkillsViewModel1.LevelsViewModel = await _userService.GetLevels().OrderBy(x => x.Order)
@@ -45,7 +43,6 @@ namespace WebUI.Controllers
             specifyingSkillsViewModel1.SpecifyingSkills =
                 from s in _userService.Skill()
                 join sk in _userService.SubSkill()
-
                     on s.Id equals sk.SkillId into g
                 select new SpecifyingSkillForSearchViewModel()
                 {
@@ -64,7 +61,6 @@ namespace WebUI.Controllers
                         },
                         LevelId = minLevelId,
                         OrHigher = false
-
                     })
                 };
 
@@ -75,20 +71,14 @@ namespace WebUI.Controllers
         [Authorize(Roles = "manager")]
         public async Task<ActionResult> Index(List<SpecifyingSkillForSearchSaveModel> specifyingSkillsForSearchSaveModel, UsersSearchResult usersSearchResult)
         {
-
-
             UsersSearchResultViewModel usersSearchResultViewModel = new UsersSearchResultViewModel();
-
             if (ModelState.IsValid)
             {
-
                 int idForMinLevelValue = await _userService.GetIdForMinLevelValue();
-
                 // clear search criteria
                 specifyingSkillsForSearchSaveModel.RemoveAll(x => x.LevelId == idForMinLevelValue && !x.OrHigher);
                 usersSearchResultViewModel.SpecifyingSkillsForSearchSaveModel = specifyingSkillsForSearchSaveModel;
                 usersSearchResultViewModel.UserSearchListResultViewModel = new List<UserSearchResultViewModel>();
-
 
                 var specifyingSkillForSearchDTO = _mapper.Map<IEnumerable<SpecifyingSkillForSearchSaveModel>, IEnumerable<SpecifyingSkillForSearchDTO>>
                     (specifyingSkillsForSearchSaveModel);
@@ -132,8 +122,6 @@ namespace WebUI.Controllers
                                                          Id = spk.LevelId,
                                                          Name = lvl.Name
                                                      }
-
-
                                                  })
                                                 on s.Id equals osk.SubSkillViewModel.SkillId into g
                                             select new SpecifyingSkillViewModel1()
@@ -148,7 +136,6 @@ namespace WebUI.Controllers
                     });
                 }
             }
-
             // save search result on client side to pass them to PrintSearch
             usersSearchResult.SpecifyingSkillsForSearchSaveModel =
                 usersSearchResultViewModel.SpecifyingSkillsForSearchSaveModel;
@@ -169,9 +156,7 @@ namespace WebUI.Controllers
         {
             _userService.Dispose();
             _identityService.Dispose();
-
             base.Dispose(disposing);
         }
-
     }
 }
