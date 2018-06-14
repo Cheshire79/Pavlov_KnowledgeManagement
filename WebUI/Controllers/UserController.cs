@@ -7,6 +7,8 @@ using KnowledgeManagement.BLL.SpecifyingSkill.DTO;
 using KnowledgeManagement.BLL.SpecifyingSkill.Services;
 using Microsoft.AspNet.Identity;
 using WebUI.Models.KnowledgeManagement;
+using WebUI.Models.SpecifyingSkills;
+using WebUI.Models.SpecifyingSkills.SaveViewModel;
 
 namespace WebUI.Controllers
 {
@@ -17,93 +19,106 @@ namespace WebUI.Controllers
         public UserController(IUserService managerService)
         {
             _userService = managerService;
-        }      
+        }
 
         [Authorize(Roles = "user")]
-        public async Task<ActionResult> IndexQ()
+        public async Task<ActionResult> Index()
         {
-            SpecifyingSkillsViewModel_Queryable specifyingSkillsViewModel1 = new SpecifyingSkillsViewModel_Queryable();
+            SpecifyingSkillsViewModel specifyingSkillsViewModel = new SpecifyingSkillsViewModel();
            
                 string currentUserId = HttpContext.User.Identity.GetUserId();
-                int minLevelId = (await _userService.GetLevels().OrderBy(x => x.Order).FirstAsync()).Id;
+                int minLevelId = await _userService.GetIdForMinLevelValue();
 
-                specifyingSkillsViewModel1.LevelsViewModel = await _userService.GetLevels().OrderBy(x => x.Order)
+                specifyingSkillsViewModel.Levels = await _userService.GetLevels().OrderBy(x => x.Order)
                     .Select(x => new LevelViewModel()
                     {
                         Id = x.Id,
                         Name = x.Name
-                    }).ToListAsync(); // todo
+                    }).ToListAsync(); 
 
-                specifyingSkillsViewModel1.SpecifyingSkills =
-                    from s in _userService.Skill()
-                    join osk in
-                        (from sk in _userService.SubSkill()
-                         join spk in _userService.GetSpecifyingSkills().Where(x => x.UserId == currentUserId)
-                             on sk.Id equals spk.SubSkillId into g
+                specifyingSkillsViewModel.SpecifyingSkills =
+                   await (from skill in _userService.Skill()
+                    join specifyingSkillViewModel in
+                        (from subSkill in _userService.SubSkill()
+                         join specifyingSkill in _userService.GetSpecifyingSkills().Where(x => x.UserId == currentUserId)
+                             on subSkill.Id equals specifyingSkill.SubSkillId into specifyingSkillsDTO
                          select new SpecifyingSubSkillViewModel
                          {
-                             SubSkillViewModel = new SubSkillViewModel()
+                             SubSkill = new SubSkillViewModel()
                              {
-                                 Id = sk.Id,
-                                 Name = sk.Name,
-                                 SkillId = sk.SkillId
+                                 Id = subSkill.Id,
+                                 Name = subSkill.Name,
+                                 SkillId = subSkill.SkillId
                              },
-                             Level = new LevelViewModel()
-                             {
-                                 Id =
-                                     g.DefaultIfEmpty(new SpecifyingSkillDTO()
+                             LevelId =
+                                 specifyingSkillsDTO.DefaultIfEmpty(new SpecifyingSkillDTO()
                                      {
                                          Id = 0,
                                          LevelId = minLevelId,
                                          SubSkillId = 0,
                                          UserId = ""
                                      }).FirstOrDefault().LevelId
-                                 
-                             }
                              // absent of  SpecifyingSkillDTO means that user has no skill.
                              // as skell "None" storage at first minimum order  at database
                          })
-                        on s.Id equals osk.SubSkillViewModel.SkillId into g
-                    select new SpecifyingSkillViewModel1()
+                        on skill.Id equals specifyingSkillViewModel.SubSkill.SkillId into specifyingSubSkillViewModel
+                    select new SpecifyingSkillViewModel()
                     {
-                        SkillViewModel = new SkillViewModel()
+                        Skill = new SkillViewModel()
                         {
-                            Id = s.Id,
-                            Name = s.Name
+                            Id = skill.Id,
+                            Name = skill.Name
                         },
-                        SubSkillListViewModel = g
-                    };
+                        SpecifyingSubSkills = specifyingSubSkillViewModel.ToList()
+                    }).ToListAsync();
 
                 //select * from skills
                 //left join SubSkills on skills.Id=SubSkills.SkillId
                 //left join  SpecifyingSkills on SpecifyingSkills.SubSkillId=SubSkills.Id 
 
-         
-            return View(specifyingSkillsViewModel1);
+            return View(specifyingSkillsViewModel);
 
         }
         [HttpPost]
         [Authorize(Roles = "user")]
-        public async Task<ActionResult> IndexQ(SpecifyingSkillsSaveModel specifyingSkillsViewModel)
+        //  public async Task<ActionResult> Index(SpecifyingSkillsViewModel specifyingSkillsViewModel
+        public async Task<ActionResult> Index(SpecifyingSkillsSaveViewModel specifyingSkillsSave)
         {
-           
-                if (ModelState.IsValid)
+            // two way 
+            // use the same type SpecifyingSkillsViewModel
+            // or special type to save data SpecifyingSkillsSaveModel - which one is better ?
+
+            #region using SpecifyingSkillsViewModel to save changes
+            /*
+            if (ModelState.IsValid)
                 {
                     string currentUserId = HttpContext.User.Identity.GetUserId();
                     List<SpecifyingSkillDTO> result =
-                        specifyingSkillsViewModel.SpecifyingSkills.Where(x => x.SubSkillListViewModel != null)
-                            .SelectMany(x => x.SubSkillListViewModel,
+                        specifyingSkillsViewModel.SpecifyingSkills.Where(x => x.SpecifyingSubSkills != null)
+                            .SelectMany(x => x.SpecifyingSubSkills,
                                 (x, y) => new SpecifyingSkillDTO()
                                 {
-                                    SubSkillId = y.SubSkillViewModel.Id,
-                                    LevelId = y.Level.Id //, UserId = currentUserId 
-                                }).ToList();// todo remove list
+                                    SubSkillId = y.SubSkill.Id,
+                                    LevelId = y.LevelId 
+                                }).ToList();
                    await _userService.SaveSpecifyingSkill(result, currentUserId);
-                }
-          
+                }*/
+            #endregion
+            if (ModelState.IsValid)
+            {
+                string currentUserId = HttpContext.User.Identity.GetUserId();
+                List<SpecifyingSkillDTO> result =
+                    specifyingSkillsSave.SpecifyingSkills.Where(x => x.SubSkills != null)
+                        .SelectMany(x => x.SubSkills,
+                            (x, y) => new SpecifyingSkillDTO()
+                            {
+                                SubSkillId = y.SubSkillId,
+                                LevelId = y.LevelId
+                            }).ToList();
+                await _userService.SaveSpecifyingSkill(result, currentUserId);
+            }
             return RedirectToAction("Index", "Home");
         }
-        
 
         protected override void Dispose(bool disposing)
         {

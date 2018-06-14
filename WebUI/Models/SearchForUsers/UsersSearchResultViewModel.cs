@@ -7,7 +7,7 @@ namespace WebUI.Models.SearchForUsers
     public class UserSearchResultViewModel
     {
         public UserViewModel UserViewModel { get; set; }
-        public IEnumerable<SpecifyingSkillViewModel1> SpecifyingSkills { get; set; }
+        public IEnumerable<SpecifyingSkillViewModel> SpecifyingSkills { get; set; }
     }
     public class UsersSearchResultViewModel
     {

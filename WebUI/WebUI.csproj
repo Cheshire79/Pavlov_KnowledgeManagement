@@ -210,6 +210,9 @@
     <Compile Include="Infrastructure\NinjectControllerFactory.cs" />
     <Compile Include="Mapper\IMapperFactoryWEB.cs" />
     <Compile Include="Mapper\MapperFactoryWEB.cs" />
+    <Compile Include="Models\SpecifyingSkills\SaveViewModel\SpecifyingSkillSaveViewModel.cs" />
+    <Compile Include="Models\SpecifyingSkills\SaveViewModel\SpecifyingSubSkillSaveViewModel.cs" />
+    <Compile Include="Models\SpecifyingSkills\SpecifyingSkillsViewModel.cs" />
     <Compile Include="Models\UsersAndRoles\UserLoginViewModel.cs" />
     <Compile Include="Models\UsersAndRoles\UserEditViewModel.cs" />
     <Compile Include="Models\UsersAndRoles\UserRegisterViewModel.cs" />
@@ -219,7 +222,7 @@
     <Compile Include="Models\UsersAndRoles\UsersForAddingIntoRoleViewModel.cs" />
     <Compile Include="Models\UsersAndRoles\UsersInRoleViewModel.cs" />
     <Compile Include="Models\UsersAndRoles\UsersViewModel.cs" />
-    <Compile Include="Models\KnowledgeManagement\SpecifyingSkillsSaveModel.cs" />
+    <Compile Include="Models\SpecifyingSkills\SaveViewModel\SpecifyingSkillsSaveViewModel.cs" />
     <Compile Include="Models\PagingInfo.cs" />
     <Compile Include="Models\SearchForUsers\SpecifyingSkillForSearchSaveModel.cs" />
     <Compile Include="Models\SearchForUsers\SpecifyingSkillForSearchViewModel.cs" />
@@ -230,9 +233,9 @@
     <Compile Include="Models\KnowledgeManagement\LevelViewModel.cs" />
     <Compile Include="Models\KnowledgeManagement\SkillsViewModelTest.cs" />
     <Compile Include="Models\KnowledgeManagement\SkillViewModel.cs" />
-    <Compile Include="Models\KnowledgeManagement\SpecifyingSkillViewModel.cs" />
-    <Compile Include="Models\KnowledgeManagement\SpecifyingSubSkillViewModel.cs" />
-    <Compile Include="Models\KnowledgeManagement\SubSkillListViewModel.cs" />
+    <Compile Include="Models\SpecifyingSkills\SpecifyingSkillViewModel.cs" />
+    <Compile Include="Models\SpecifyingSkills\SpecifyingSubSkillViewModel.cs" />
+    <Compile Include="Models\KnowledgeManagement\SubSkillsViewModel.cs" />
     <Compile Include="Models\KnowledgeManagement\SubSkillViewModel.cs" />
     <Compile Include="Models\UsersAndRoles\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -290,7 +293,7 @@
     <Content Include="Views\ManagerSkill\CreateSubSkill.cshtml" />
     <Content Include="Views\ManagerSkill\_LayoutManagerSkill.cshtml" />
     <Content Include="Views\ManagerSkill\EditSubSkill.cshtml" />
-    <Content Include="Views\User\IndexQ.cshtml" />
+    <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\SearchForUsers\Index.cshtml" />
     <Content Include="Views\SearchForUsers\SearchResult.cshtml" />
     <Content Include="Views\SearchForUsers\_SearchResultPartial.cshtml" />
@@ -306,9 +309,9 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BLL\BLL.csproj">
+    <ProjectReference Include="..\BLL\Identity.BLL.csproj">
       <Project>{c6a2b2a5-7d5c-46cb-9e05-f1ccb7aa157f}</Project>
-      <Name>BLL</Name>
+      <Name>Identity.BLL</Name>
     </ProjectReference>
     <ProjectReference Include="..\KnowledgeManagement.BLL\KnowledgeManagement.BLL.csproj">
       <Project>{88188321-5931-42e3-a0e2-5fa928b06e69}</Project>

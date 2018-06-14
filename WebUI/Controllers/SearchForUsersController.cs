@@ -111,27 +111,23 @@ namespace WebUI.Controllers
                                                      on spk.LevelId equals lvl.Id
                                                  select new SpecifyingSubSkillViewModel
                                                  {
-                                                     SubSkillViewModel = new SubSkillViewModel()
+                                                     SubSkill = new SubSkillViewModel()
                                                      {
                                                          Id = sk.Id,
                                                          Name = sk.Name,
                                                          SkillId = sk.SkillId
                                                      },
-                                                     Level = new LevelViewModel()
-                                                     {
-                                                         Id = spk.LevelId,
-                                                         Name = lvl.Name
-                                                     }
+                                                     LevelId= spk.LevelId
                                                  })
-                                                on s.Id equals osk.SubSkillViewModel.SkillId into g
-                                            select new SpecifyingSkillViewModel1()
+                                                on s.Id equals osk.SubSkill.SkillId into g
+                                            select new SpecifyingSkillViewModel()
                                             {
-                                                SkillViewModel = new SkillViewModel()
+                                                Skill = new SkillViewModel()
                                                 {
                                                     Id = s.Id,
                                                     Name = s.Name
                                                 },
-                                                SubSkillListViewModel = g
+                                                SpecifyingSubSkills = g.ToList()
                                             }).ToList()
                     });
                 }

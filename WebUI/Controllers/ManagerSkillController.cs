@@ -56,7 +56,7 @@ namespace WebUI.Controllers
             {                
                await _skillService.Create(new SkillDTO() { Name = model.Name });
             }
-            return RedirectToAction("Skills"); // todo to last pages
+            return RedirectToAction("Skills"); // todo  returnUrl
         }
 
 
@@ -75,7 +75,7 @@ namespace WebUI.Controllers
             {
                 return HttpNotFound(ex.Message);
             }
-            //   return RedirectToAction("Skills", new {ex.Message}); // todo to last pages
+            //   return RedirectToAction("Skills", new {ex.Message}); // todo  returnUrl
 
         }
 
@@ -99,7 +99,7 @@ namespace WebUI.Controllers
             {
                 return HttpNotFound(ex.Message);
             }
-            //   return RedirectToAction("Skills", new {ex.Message}); // todo to last pages
+            //   return RedirectToAction("Skills", new {ex.Message}); // todo  returnUrl
         }
 
         [HttpPost]
@@ -117,7 +117,7 @@ namespace WebUI.Controllers
                     return HttpNotFound(ex.Message);
                 }
             }
-            return RedirectToAction("Skills"); // todo to last pages
+            return RedirectToAction("Skills"); // todo  returnUrl
         }
 
         [Authorize(Roles = "manager")]
@@ -127,12 +127,12 @@ namespace WebUI.Controllers
                 return HttpNotFound("Missed id value");
             try
             {
-                SubSkillListViewModel subSkillListViewModel =
-                       new SubSkillListViewModel()
+                SubSkillsViewModel subSkillListViewModel =
+                       new SubSkillsViewModel()
                        {
-                           SubSkillsViewModel = (await _subSkillService.GetSubSkillBySkillId(skillId.Value))
+                           SubSkills = (await _subSkillService.GetSubSkillBySkillId(skillId.Value))
                                .Select(x => new SubSkillViewModel() { Id = x.Id, Name = x.Name, SkillId = x.SkillId }),
-                           SkillViewModel = new SkillViewModel()
+                           Skill = new SkillViewModel()
                            {
                                Id = skillId.Value,
                                Name = (await _skillService.GetByIdAsync(skillId.Value)).Name
@@ -235,7 +235,6 @@ namespace WebUI.Controllers
                 //   return RedirectToAction("Skills", new {ex.Message}); // todo to last pages
             }
         }
-
 
         [HttpPost]
         [Authorize(Roles = "manager")]

@@ -13,37 +13,37 @@
 
                 @foreach (var specifyingSkill in item.SpecifyingSkills)
                 {
-                    if (specifyingSkill.SubSkillListViewModel.Any())
+                    if (specifyingSkill.SpecifyingSubSkills.Any())
                     {
-                        <div class="subtitle">@specifyingSkill.SkillViewModel.Name</div>
+                        <div class="subtitle">@specifyingSkill.Skill.Name</div>
                         <div class="skill-scope">
 
-                            @foreach (var subSkill in specifyingSkill.SubSkillListViewModel)
+                            @foreach (var specifyingsubSkill in specifyingSkill.SpecifyingSubSkills)
                             {
 
                                 <div class="skill-title">
                                     @if (Model.SpecifyingSkillsForSearchSaveModel.Any(x => x.OrHigher == false
-                                                                                           && x.SubSkillId == subSkill.SubSkillViewModel.Id))
+                                                                                           && x.SubSkillId == specifyingsubSkill.SubSkill.Id))
                                     {
                                         <div class="strong-match">
-                                            @subSkill.SubSkillViewModel.Name
+                                            @specifyingsubSkill.SubSkill.Name
                                         </div>
                                     }
                                     else
-                                        if (Model.SpecifyingSkillsForSearchSaveModel.Any(x => x.OrHigher == true && x.SubSkillId == subSkill.SubSkillViewModel.Id))
+                                        if (Model.SpecifyingSkillsForSearchSaveModel.Any(x => x.OrHigher == true && x.SubSkillId == specifyingsubSkill.SubSkill.Id))
                                     {
                                         <div class="soft-match">
-                                            @subSkill.SubSkillViewModel.Name
+                                            @specifyingsubSkill.SubSkill.Name
                                         </div>
                                     }
                                     else
                                     { <div class="the-rest-match">
-                                            @subSkill.SubSkillViewModel.Name
+                                            @specifyingsubSkill.SubSkill.Name
                                         </div>
                                     }
                                 </div>
 
-                                <div class="skill-Rating">@subSkill.Level.Name</div>
+                                <div class="skill-Rating">@specifyingsubSkill.LevelId</div>
                             }
                         </div>
                     }

@@ -1,0 +1,151 @@
+﻿
+@using WebUI.Models.SpecifyingSkills.SaveViewModel
+@model WebUI.Models.SpecifyingSkills.SpecifyingSkillsViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using (Html.BeginForm())
+{
+    // two way
+    // use the same type SpecifyingSkillsViewModel_Queryable
+    // or special type to save data SpecifyingSkillsSaveModel
+
+    SpecifyingSkillsSaveViewModel specifyingSkillsSave = new SpecifyingSkillsSaveViewModel();
+    specifyingSkillsSave.SpecifyingSkills = new List<SpecifyingSkillSaveViewModel>();
+    @Html.AntiForgeryToken()
+    int skillIndex = -1;
+    <div class="manager-search-skill">
+        <div class="title">Professional skills</div>
+
+        @for (int i = 0; i < Model.SpecifyingSkills.Count(); i++)
+        {
+            if (Model.SpecifyingSkills[i].SpecifyingSubSkills.Any())
+            {
+                skillIndex++;
+                specifyingSkillsSave.SpecifyingSkills.Add(new SpecifyingSkillSaveViewModel());
+        <div class="subtitle">
+            @Model.SpecifyingSkills[i].Skill.Name
+        </div>
+                specifyingSkillsSave.SpecifyingSkills[skillIndex].SubSkills = new List<SpecifyingSubSkillSaveViewModel>();
+
+                <div class="skill-scope">
+                    @{
+                        for (int j = 0; j < Model.SpecifyingSkills[i].SpecifyingSubSkills.Count(); j++)
+                        {
+                            specifyingSkillsSave.SpecifyingSkills[skillIndex].SubSkills.Add(new SpecifyingSubSkillSaveViewModel());
+
+                            specifyingSkillsSave.SpecifyingSkills[skillIndex].SubSkills[j].SubSkillId = Model.SpecifyingSkills[i].SpecifyingSubSkills[j].SubSkill.Id;
+                            int levelId = Model.SpecifyingSkills[i].SpecifyingSubSkills[j].LevelId;
+                            specifyingSkillsSave.SpecifyingSkills[skillIndex].SubSkills[j].LevelId = levelId;
+                            var selected = Model.Levels.FirstOrDefault(x => x.Id == levelId);
+                            SelectList levels = new SelectList(Model.Levels, "Id", "Name", selected);
+                            <span class="skill-title">
+                                @Model.SpecifyingSkills[i].SpecifyingSubSkills[j].SubSkill.Name
+                            </span>
+                            <div class="skill-Rating">
+                                @Html.HiddenFor(model => specifyingSkillsSave.SpecifyingSkills[skillIndex].SubSkills[j].SubSkillId)
+                                @Html.DropDownListFor(model => specifyingSkillsSave.SpecifyingSkills[skillIndex].SubSkills[j].LevelId, levels as SelectList)
+                            </div>
+                        }
+                    }
+                </div>
+            }
+        }
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-default" />
+        </div>
+    </div>
+}
+
+
+@{
+    /*
+
+@using (Html.BeginForm())
+{
+    // two way
+    // use the same type SpecifyingSkillsViewModel_Queryable
+    // or special type to save data SpecifyingSkillsSaveModel
+
+    //  SpecifyingSkillsSaveModel specifyingSkillsViewModel = new SpecifyingSkillsSaveModel();
+    //  specifyingSkillsViewModel.SpecifyingSkills = new List<SpecifyingSkillSaveModel>();
+
+    <div class="manager-search-skill">
+        <div class="title">Professional skills</div>
+
+
+
+        @for (int i = 0; i < Model.SpecifyingSkills.Count(); i++)
+        {
+            //{ int i = 0; }
+            //foreach (var specifyingSkill in Model.SpecifyingSkills)
+            @Html.HiddenFor(model => Model.SpecifyingSkills[i].Skill.Id, Model.SpecifyingSkills[i].Skill.Id)
+            if (//specifyingSkill.
+                Model.SpecifyingSkills[i].SpecifyingSubSkills.Any())
+            {
+
+                //  specifyingSkillsViewModel.SpecifyingSkills.Add(new SpecifyingSkillSaveModel());
+                <div class="subtitle">
+
+
+                    @Html.DisplayFor(model => Model.SpecifyingSkills[i].Skill.Name)
+
+
+                </div>
+                //     specifyingSkillsViewModel.SpecifyingSkills[i].SubSkills = new List<SpecifyingSubSkillSaveModel>();
+                <div class="skill-scope">
+                    @{
+                        //int j = 0;
+                        //foreach (var subSkill in Model.SpecifyingSkills[i].SpecifyingSubSkills)
+                        for (int j = 0; j < Model.SpecifyingSkills[i].SpecifyingSubSkills.Count(); j++)
+                        {
+                            // specifyingSkillsViewModel.SpecifyingSkills[i].SubSkills.Add(new SpecifyingSubSkillSaveModel());
+                            //   specifyingSkillsViewModel.SpecifyingSkills[i].SubSkills[j].SubSkillId = subSkill.SubSkill.Id;
+                            //   specifyingSkillsViewModel.SpecifyingSkills[i].SubSkills[j].LevelId = subSkill.LevelId;
+
+                            int levelId = Model.SpecifyingSkills[i].SpecifyingSubSkills[j].LevelId;
+                            //subSkill.LevelId;
+                            var selected = Model.Levels.FirstOrDefault(x => x.Id == levelId);
+                            SelectList levels = new SelectList(Model.Levels, "Id", "Name", selected);
+
+                            <span class="skill-title">
+                                @Html.DisplayFor(model => Model.SpecifyingSkills[i].SpecifyingSubSkills[j].SubSkill.Name)
+                            </span>
+
+
+                            <div class="skill-Rating">
+                                @Html.HiddenFor(model => //specifyingSkillsViewModel.SpecifyingSkills[i].SubSkills[j].SubSkillId
+                                        Model.SpecifyingSkills[i].SpecifyingSubSkills[j].SubSkill.Id, Model.SpecifyingSkills[i].SpecifyingSubSkills[j].SubSkill.Id)
+                                @Html.DropDownListFor(x =>
+                                        Model.SpecifyingSkills[i].SpecifyingSubSkills[j].LevelId//specifyingSkillsViewModel.SpecifyingSkills[i].SubSkills[j].LevelId
+                                        , levels as SelectList)
+                            </div>
+                        }
+                    }
+                </div>
+            }
+        }
+
+
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-default" />
+        </div>
+    </div>
+}
+*/
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+

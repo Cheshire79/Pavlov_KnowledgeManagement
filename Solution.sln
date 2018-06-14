@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2037
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUI", "WebUI\WebUI.csproj", "{0B0A6B9C-2978-4C18-BFEB-6B5A8C34B204}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -9,9 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUI", "WebUI\WebUI.csproj
 		{C6A2B2A5-7D5C-46CB-9E05-F1CCB7AA157F} = {C6A2B2A5-7D5C-46CB-9E05-F1CCB7AA157F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{7A15B9F1-1DA2-4651-BE7B-8E3BCAA0E9C5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.DAL", "DAL\Identity.DAL.csproj", "{7A15B9F1-1DA2-4651-BE7B-8E3BCAA0E9C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLL", "BLL\BLL.csproj", "{C6A2B2A5-7D5C-46CB-9E05-F1CCB7AA157F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.BLL", "BLL\Identity.BLL.csproj", "{C6A2B2A5-7D5C-46CB-9E05-F1CCB7AA157F}"
 	ProjectSection(ProjectDependencies) = postProject
 		{7A15B9F1-1DA2-4651-BE7B-8E3BCAA0E9C5} = {7A15B9F1-1DA2-4651-BE7B-8E3BCAA0E9C5}
 	EndProjectSection
@@ -52,5 +52,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {286F0727-8D0F-4574-9404-F095B2E3EB04}
 	EndGlobalSection
 EndGlobal

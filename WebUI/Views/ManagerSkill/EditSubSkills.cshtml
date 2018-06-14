@@ -1,4 +1,4 @@
-﻿@model WebUI.Models.KnowledgeManagement.SubSkillListViewModel
+﻿@model WebUI.Models.KnowledgeManagement.SubSkillsViewModel
 
 @{
     Layout = "~/Views/ManagerSkill/_LayoutManagerSkill.cshtml";
@@ -8,11 +8,11 @@
 
 
 
-<div class="headerSkills">Edit subSkills for @Model.SkillViewModel.Name Group</div>
+<div class="headerSkills">Edit subSkills for @Model.Skill.Name Group</div>
 
 
     <p class="createTitle">
-    @Html.ActionLink("Create New", "CreateSubSkill", new { skillId = Model.SkillViewModel.Id })
+    @Html.ActionLink("Create New", "CreateSubSkill", new { skillId = Model.Skill.Id })
 </p>
     <table class="table">
         <tr>
@@ -23,7 +23,7 @@
             <td></td>
 </tr>
 
-        @foreach (var item in Model.SubSkillsViewModel)
+        @foreach (var item in Model.SubSkills)
         {
             <tr>
                 <td>
