@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using BLL.Identity.Services.Interfaces;
 using KnowledgeManagement.BLL.SpecifyingSkill.DTO;
 using KnowledgeManagement.BLL.SpecifyingSkill.Services;
@@ -20,7 +21,7 @@ namespace WebUI.Controllers
         private IUserService _userService;
         private IIdentityService _identityService;
         private IMapper _mapper;
-       
+
         public SearchForUsersController(IUserService userService, IIdentityService identityService, IMapperFactoryWEB mapperFactory)
         {
             _userService = userService;
@@ -32,38 +33,50 @@ namespace WebUI.Controllers
         {
             SpecifyingSkillsForSearchViewModel specifyingSkillsViewModel1 = new SpecifyingSkillsForSearchViewModel();
             int minLevelId = (await _userService.GetLevels().OrderBy(x => x.Order).FirstAsync()).Id; // todo to service ?
+            // GetIdOfMinimumKnowledgeLevel
 
-            specifyingSkillsViewModel1.LevelsViewModel = await _userService.GetLevels().OrderBy(x => x.Order)
-                .Select(x => new LevelViewModel()
-                {
-                    Id = x.Id,
-                    Name = x.Name
-                }).ToListAsync(); // todo
+            specifyingSkillsViewModel1.LevelsViewModel = _mapper.Map<IEnumerable<LevelDTO>, IEnumerable<LevelViewModel>>
+                (await _userService.GetLevels().OrderBy(x => x.Order).ToListAsync());
 
             specifyingSkillsViewModel1.SpecifyingSkills =
-                from s in _userService.Skill()
-                join sk in _userService.SubSkill()
+                from s in _userService.Skill().ProjectTo<SkillViewModel>(_mapper.ConfigurationProvider)
+                join sk in _userService.SubSkill().ProjectTo<SubSkillViewModel>(_mapper.ConfigurationProvider)
                     on s.Id equals sk.SkillId into g
                 select new SpecifyingSkillForSearchViewModel()
                 {
-                    SkillViewModel = new SkillViewModel()
-                    {
-                        Id = s.Id,
-                        Name = s.Name
-                    },
+                    SkillViewModel = s,
                     SubSkillListViewModel = g.Select(x => new SpecifyingSubSkillForSearchViewModel()
                     {
-                        SubSkillViewModel = new SubSkillViewModel()
-                        {
-                            Id = x.Id,
-                            SkillId = x.SkillId,
-                            Name = x.Name
-                        },
+                        SubSkillViewModel = x,
                         LevelId = minLevelId,
                         OrHigher = false
                     })
                 };
-
+            //specifyingSkillsViewModel1.SpecifyingSkills =
+            //    from s in _userService.Skill()
+            //    join sk in _userService.SubSkill()
+            //        on s.Id equals sk.SkillId into g
+            //    select new SpecifyingSkillForSearchViewModel()
+            //    {
+            //        SkillViewModel =
+            //            new SkillViewModel()
+            //            {
+            //                Id = s.Id,
+            //                Name = s.Name
+            //            },
+            //        SubSkillListViewModel = g.Select(x => new SpecifyingSubSkillForSearchViewModel()
+            //        {
+            //            SubSkillViewModel = new SubSkillViewModel()
+            //            {
+            //                Id = x.Id,
+            //                SkillId = x.SkillId,
+            //                Name = x.Name
+            //            },
+            //            LevelId = minLevelId,
+            //            OrHigher = false
+            //        })
+            //    };
+            //ProjectTo<SubSkillViewModel>(_mapper.ConfigurationProvider)
             return View(specifyingSkillsViewModel1);
         }
 
@@ -85,13 +98,9 @@ namespace WebUI.Controllers
                 var usersId = _userService.GetUsersIdByCriteria(specifyingSkillForSearchDTO);
 
                 IEnumerable<UserViewModel> Users = from id in usersId
-                                                   join n in _identityService.GetUsers()
-                                                       on id equals n.Id
-                                                   select new UserViewModel()
-                                                   {
-                                                       Id = n.Id,
-                                                       Name = n.Name
-                                                   };
+                                                   join user in _identityService.GetUsers().ProjectTo<UserViewModel>(_mapper.ConfigurationProvider)
+                                                       on id equals user.Id
+                                                   select user;
 
                 foreach (var u in Users)
                 {
@@ -102,31 +111,22 @@ namespace WebUI.Controllers
                             Id = u.Id,
                             Name = u.Name
                         },
-                        SpecifyingSkills = (from s in _userService.Skill()
+                        SpecifyingSkills = (from s in _userService.Skill().ProjectTo<SkillViewModel>(_mapper.ConfigurationProvider)
                                             join osk in
-                                                (from sk in _userService.SubSkill()
+                                                (from sk in _userService.SubSkill().ProjectTo<SubSkillViewModel>(_mapper.ConfigurationProvider)
                                                  join spk in _userService.GetSpecifyingSkills().Where(x => x.UserId == u.Id)
                                                      on sk.Id equals spk.SubSkillId
                                                  join lvl in _userService.GetLevels()
                                                      on spk.LevelId equals lvl.Id
                                                  select new SpecifyingSubSkillViewModel
                                                  {
-                                                     SubSkill = new SubSkillViewModel()
-                                                     {
-                                                         Id = sk.Id,
-                                                         Name = sk.Name,
-                                                         SkillId = sk.SkillId
-                                                     },
-                                                     LevelId= spk.LevelId
+                                                     SubSkill = sk,
+                                                     LevelId = spk.LevelId
                                                  })
                                                 on s.Id equals osk.SubSkill.SkillId into g
                                             select new SpecifyingSkillViewModel()
                                             {
-                                                Skill = new SkillViewModel()
-                                                {
-                                                    Id = s.Id,
-                                                    Name = s.Name
-                                                },
+                                                Skill = s,
                                                 SpecifyingSubSkills = g.ToList()
                                             }).ToList()
                     });

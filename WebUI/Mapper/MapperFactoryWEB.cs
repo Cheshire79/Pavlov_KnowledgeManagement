@@ -35,6 +35,9 @@ namespace WebUI.Mapper
                 cfg.CreateMap<SkillViewModel,SkillDTO>();
                 cfg.CreateMap<SubSkillDTO, SubSkillViewModel>();
                 cfg.CreateMap<SubSkillViewModel, SubSkillDTO>();
+
+                cfg.CreateMap<LevelViewModel,LevelDTO>();
+                
             });
             _mapper = config.CreateMapper();
         }
