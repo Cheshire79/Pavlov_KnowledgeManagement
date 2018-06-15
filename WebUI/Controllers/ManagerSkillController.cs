@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using KnowledgeManagement.BLL.DTO;
 using KnowledgeManagement.BLL.Services;
 using WebUI.Mapper;
@@ -14,7 +15,6 @@ namespace WebUI.Controllers
 {
     public class ManagerSkillController : Controller
     {
-
         private ISubSkillService _subSkillService;
         private ISkillService _skillService;
         private IMapper _mapper;
@@ -33,7 +33,6 @@ namespace WebUI.Controllers
             TempData["message"] = message;
             IEnumerable<SkillViewModel> viewModel = _mapper.Map<IEnumerable<SkillDTO>, IEnumerable<SkillViewModel>>
             (await _skillService.GetAll().OrderBy(x => x.Name).ToListAsync());
-
             return View(viewModel);
         }
 
@@ -44,7 +43,6 @@ namespace WebUI.Controllers
             {
                 ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Skills") : returnUrl
             };
-
             return View(skillViewModel);
         }
 
@@ -53,12 +51,13 @@ namespace WebUI.Controllers
         public async Task<ActionResult> CreateSkill(SkillViewModel model)
         {
             if (ModelState.IsValid)
-            {                
-               await _skillService.Create(new SkillDTO() { Name = model.Name });
+            {
+                var skillDTO = _mapper.Map<SkillViewModel, SkillDTO>(model);
+                skillDTO.Id = new SkillDTO().Id;
+                await _skillService.Create(skillDTO);
             }
             return RedirectToAction("Skills"); // todo  returnUrl
         }
-
 
         [HttpPost]
         [Authorize(Roles = "manager")]
@@ -70,13 +69,11 @@ namespace WebUI.Controllers
                 string temp = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Skills") : returnUrl;
                 return Redirect(temp);
             }
-
             catch (Exception ex)
             {
                 return HttpNotFound(ex.Message);
             }
             //   return RedirectToAction("Skills", new {ex.Message}); // todo  returnUrl
-
         }
 
         [Authorize(Roles = "manager")]
@@ -86,13 +83,9 @@ namespace WebUI.Controllers
                 return HttpNotFound("Missed id value");
             try
             {
-                var skill = await _skillService.GetByIdAsync(id.Value);
-                SkillViewModel skillViewModel = new SkillViewModel()
-                {
-                    Id = skill.Id,
-                    Name = skill.Name,
-                    ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Skills") : returnUrl
-                };
+                SkillDTO skillDTO = await _skillService.GetByIdAsync(id.Value);
+                var skillViewModel = _mapper.Map<SkillDTO,SkillViewModel>(skillDTO);
+                skillViewModel.ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Skills") : returnUrl;
                 return View(skillViewModel);
             }
             catch (Exception ex)
@@ -110,7 +103,7 @@ namespace WebUI.Controllers
             {
                 try
                 {
-                    await _skillService.Update(new SkillDTO() { Id = model.Id, Name = model.Name });
+                    await _skillService.Update(_mapper.Map<SkillViewModel, SkillDTO>(model));
                 }
                 catch (Exception ex)
                 {
@@ -130,8 +123,8 @@ namespace WebUI.Controllers
                 SubSkillsViewModel subSkillListViewModel =
                        new SubSkillsViewModel()
                        {
-                           SubSkills = (await _subSkillService.GetSubSkillBySkillId(skillId.Value))
-                               .Select(x => new SubSkillViewModel() { Id = x.Id, Name = x.Name, SkillId = x.SkillId }),
+                           SubSkills = (await _subSkillService.GetSubSkillBySkillId(skillId.Value)).
+                               ProjectTo<SubSkillViewModel>(_mapper.ConfigurationProvider),
                            Skill = new SkillViewModel()
                            {
                                Id = skillId.Value,
@@ -147,7 +140,6 @@ namespace WebUI.Controllers
                 // todo to last pages
             }
         }
-
         #endregion
 
         #region SubSkill
@@ -182,7 +174,7 @@ namespace WebUI.Controllers
             {
                 try
                 {
-                    await _subSkillService.Create(new SubSkillDTO() { SkillId = model.SkillId, Name = model.Name });
+                    await _subSkillService.Create( _mapper.Map<SubSkillViewModel, SubSkillDTO>(model));
                 }
                 catch (Exception ex)
                 {
@@ -190,8 +182,6 @@ namespace WebUI.Controllers
                 }
             }
             return RedirectToAction("EditSubSkills", new { model.SkillId }); // todo to last pages
-
-
         }
 
         [HttpPost]
@@ -200,7 +190,6 @@ namespace WebUI.Controllers
         {
             try
             {
-
                 await _subSkillService.Delete(subSkillid);
                 return Redirect(string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("Skills") : returnUrl);
             }
@@ -218,15 +207,11 @@ namespace WebUI.Controllers
                 return HttpNotFound("Missed id value");
             try
             {
-                var subSkill = await _subSkillService.GetByIdAsync(subSkillId.Value);
-                SubSkillViewModel subSkillViewModel =
-                    new SubSkillViewModel()
-                    {
-                        Id = subSkill.Id,
-                        SkillId = subSkill.SkillId,
-                        Name = subSkill.Name,
-                        ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("EditSubSkills", new { subSkill.SkillId }) : returnUrl
-                    };
+                SubSkillDTO subSkillDTO = await _subSkillService.GetByIdAsync(subSkillId.Value);
+              
+                SubSkillViewModel subSkillViewModel = _mapper.Map<SubSkillDTO, SubSkillViewModel>(subSkillDTO);
+                subSkillViewModel.ReturnUrl = string.IsNullOrWhiteSpace(returnUrl) ? Url.Action("EditSubSkills", new { subSkillDTO.SkillId }) : returnUrl;
+                //todo check!!!!
                 return View(subSkillViewModel);
             }
             catch (Exception ex)
@@ -244,7 +229,7 @@ namespace WebUI.Controllers
             {
                 try
                 {
-                    await _subSkillService.Update(new SubSkillDTO() { Id = model.Id, Name = model.Name, SkillId = model.SkillId });
+                    await _subSkillService.Update(_mapper.Map<SubSkillViewModel,SubSkillDTO>(model));
                 }
                 catch (Exception ex)
                 {
@@ -253,7 +238,6 @@ namespace WebUI.Controllers
             }
             return Redirect(model.ReturnUrl); // todo to last pages
         }
-
         #endregion
 
         protected override void Dispose(bool disposing)

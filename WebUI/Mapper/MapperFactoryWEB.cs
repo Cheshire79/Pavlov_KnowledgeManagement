@@ -18,6 +18,8 @@ namespace WebUI.Mapper
         {
             var config = new MapperConfiguration(cfg =>
             {
+                // source , destination
+                // when do i need directly set up mapping ? (because sometime i cam miss and it still works)
                 cfg.CreateMap<SpecifyingSkillForSearchSaveModel, SpecifyingSkillForSearchDTO>();
                 cfg.CreateMap<UserDTO, UserViewModel>();
                 cfg.CreateMap<RoleDTO, RoleViewModel>();
@@ -30,6 +32,9 @@ namespace WebUI.Mapper
                     x => x.MapFrom(m => m.UserName)).ForMember(x => x.Password,
                     x => x.MapFrom(m => m.Password));
                 cfg.CreateMap<SkillDTO, SkillViewModel>();
+                cfg.CreateMap<SkillViewModel,SkillDTO>();
+                cfg.CreateMap<SubSkillDTO, SubSkillViewModel>();
+                cfg.CreateMap<SubSkillViewModel, SubSkillDTO>();
             });
             _mapper = config.CreateMapper();
         }
