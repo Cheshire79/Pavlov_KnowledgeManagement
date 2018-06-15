@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using BLL.Mapper;
 using KnowledgeManagement.BLL.DTO;
 using KnowledgeManagement.DAL.Entities;
 using KnowledgeManagement.DAL.Repository;
@@ -11,34 +14,37 @@ namespace KnowledgeManagement.BLL.Services
     class SkillService : ISkillService
     {
         private IUnitOfWork _unitOfWork;
+        private IMapper _mapper;
 
-        public SkillService(IUnitOfWork unitOfWork)
+        public SkillService(IUnitOfWork unitOfWork, IMappertFactory mapperFactory)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapperFactory.CreateMapper();
         }
         public IQueryable<SkillDTO> GetAll()
         {
-            return _unitOfWork.Skills.GetAll().Select(x => new SkillDTO() { Id = x.Id, Name = x.Name }); ;
+            return _unitOfWork.Skills.GetAll().ProjectTo<SkillDTO>(_mapper.ConfigurationProvider);
         }
 
         public async Task<SkillDTO> GetByIdAsync(int id) //todo map
         {
             var skill = await _unitOfWork.Skills.GetByIdAsync(id);
             if (skill != null)
-                return new SkillDTO() { Name = skill.Name, Id = skill.Id };
+                return _mapper.Map<Skill, SkillDTO>(skill);
             throw new ArgumentException("There is no skill with id " + id);
-
         }
 
-        public async Task Create(SkillDTO skill)
+        public async Task Create(SkillDTO skillDTO)
         {
-            _unitOfWork.Skills.Create(new Skill() { Name = skill.Name }); // do need to be async ?
+            var skill = _mapper.Map<SkillDTO, Skill>(skillDTO);
+            skill.Id = new Skill().Id;
+            _unitOfWork.Skills.Create(skill); // do need to be async ?
             await _unitOfWork.SaveAsync();
         }
 
         public async Task Update(SkillDTO skillDTO)
         {
-            await _unitOfWork.Skills.Update(new Skill() { Id = skillDTO.Id, Name = skillDTO.Name });
+            await _unitOfWork.Skills.Update(_mapper.Map<SkillDTO, Skill>(skillDTO));
             await _unitOfWork.SaveAsync();
         }
 
@@ -51,6 +57,5 @@ namespace KnowledgeManagement.BLL.Services
         {
             _unitOfWork.Dispose();
         }
-
     }
 }

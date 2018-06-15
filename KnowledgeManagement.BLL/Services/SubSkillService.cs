@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using BLL.Mapper;
 using KnowledgeManagement.BLL.DTO;
 using KnowledgeManagement.DAL.Entities;
 using KnowledgeManagement.DAL.Repository;
@@ -11,15 +14,17 @@ namespace KnowledgeManagement.BLL.Services
     class SubSkillService : ISubSkillService
     {
         private IUnitOfWork _unitOfWork;
+        private IMapper _mapper;
 
-        public SubSkillService(IUnitOfWork unitOfWork)
+        public SubSkillService(IUnitOfWork unitOfWork, IMappertFactory mapperFactory)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapperFactory.CreateMapper();
         }
 
         public IQueryable<SubSkillDTO> GetAll()
         {
-            return _unitOfWork.SubSkills.GetAll().Select(x => new SubSkillDTO() { Id = x.Id, Name = x.Name, SkillId = x.SkillId }); ;
+            return _unitOfWork.SubSkills.GetAll().ProjectTo<SubSkillDTO>(_mapper.ConfigurationProvider);
         }
 
         public async Task<SubSkillDTO> GetByIdAsync(int id)
@@ -32,26 +37,23 @@ namespace KnowledgeManagement.BLL.Services
             {
                 //todo   need to log Error
             }
-            return new SubSkillDTO() { Name = subSkill.Name, Id = subSkill.Id, SkillId = subSkill.SkillId };
+            return _mapper.Map<SubSkill, SubSkillDTO>(subSkill);
         }
 
-        public async Task Create(SubSkillDTO subskill)
+        public async Task Create(SubSkillDTO subSkillDTO)
         {
-            var temp = await _unitOfWork.Skills.GetByIdAsync(subskill.SkillId);
+            var temp = await _unitOfWork.Skills.GetByIdAsync(subSkillDTO.SkillId);
             if (temp == null)
-                throw new ArgumentException("There is no skill with Id =" + subskill.SkillId);
-
-            _unitOfWork.SubSkills.Create(new SubSkill()
-            {
-                Name = subskill.Name,
-                SkillId = subskill.SkillId
-            });
+                throw new ArgumentException("There is no skill with Id =" + subSkillDTO.SkillId);
+            var subSkill = _mapper.Map<SubSkillDTO, SubSkill>(subSkillDTO);
+            subSkill.Id = new SubSkill().Id;
+            _unitOfWork.SubSkills.Create(subSkill);
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task Update(SubSkillDTO subskillDTO)
+        public async Task Update(SubSkillDTO subSkillDTO)
         {
-            await _unitOfWork.SubSkills.Update(new SubSkill() { Id = subskillDTO.Id, Name = subskillDTO.Name, SkillId = subskillDTO.SkillId });
+            await _unitOfWork.SubSkills.Update(_mapper.Map<SubSkillDTO, SubSkill>(subSkillDTO));
             await _unitOfWork.SaveAsync();
         }
 
@@ -62,11 +64,10 @@ namespace KnowledgeManagement.BLL.Services
         }
         public async Task<IQueryable<SubSkillDTO>> GetSubSkillBySkillId(int id)
         {
-            if ((await _unitOfWork.Skills.GetByIdAsync(id)) == null)
+            if (await _unitOfWork.Skills.GetByIdAsync(id) == null)
                 throw new ArgumentException("There is no skill with id " + id);
             return _unitOfWork.SubSkills.GetAll()
-                  .Where(x => x.SkillId == id)
-                  .Select(x => new SubSkillDTO() { Id = x.Id, Name = x.Name, SkillId = x.SkillId });
+                  .Where(x => x.SkillId == id).ProjectTo<SubSkillDTO>(_mapper.ConfigurationProvider);
         }
 
         public void Dispose()
