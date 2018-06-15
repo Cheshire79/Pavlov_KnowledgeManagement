@@ -30,7 +30,7 @@ namespace WebUI.Controllers
                 int minLevelId = await _userService.GetIdForMinLevelValue();
 
                 specifyingSkillsViewModel.Levels = await _userService.GetLevels().OrderBy(x => x.Order)
-                    .Select(x => new LevelViewModel()
+                    .Select(x => new LevelViewModel()//todo mapping
                     {
                         Id = x.Id,
                         Name = x.Name
@@ -44,7 +44,7 @@ namespace WebUI.Controllers
                              on subSkill.Id equals specifyingSkill.SubSkillId into specifyingSkillsDTO
                          select new SpecifyingSubSkillViewModel
                          {
-                             SubSkill = new SubSkillViewModel()
+                             SubSkill = new SubSkillViewModel()//todo mapping
                              {
                                  Id = subSkill.Id,
                                  Name = subSkill.Name,
@@ -64,7 +64,7 @@ namespace WebUI.Controllers
                         on skill.Id equals specifyingSkillViewModel.SubSkill.SkillId into specifyingSubSkillViewModel
                     select new SpecifyingSkillViewModel()
                     {
-                        Skill = new SkillViewModel()
+                        Skill = new SkillViewModel()//todo mapping
                         {
                             Id = skill.Id,
                             Name = skill.Name

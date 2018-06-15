@@ -23,10 +23,9 @@ namespace BLL.Infrastructure
             INinjectModule[] modules;
 
             modules = new INinjectModule[] { new IdentityRepositoryModule(_connectionString) };
-            _ninjectKernel.Load(modules);                                  
+            _ninjectKernel.Load(modules);
             Bind<IIdentityService>().To<IdentityService>();
-            Bind<IMapperFactory>().To<MapperFactory>();// todo if it will be two service make .InRequestScope(); or singltone
+            Bind<IMapperFactory>().To<MapperFactory>().InSingletonScope();
         }
     }
-
 }

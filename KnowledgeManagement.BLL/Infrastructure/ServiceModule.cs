@@ -26,8 +26,7 @@ namespace KnowledgeManagement.BLL.Infrastructure
             Bind<ISubSkillService>().To<SubSkillService>();
             Bind<ISkillService>().To<SkillService>();
             Bind<IUserService>().To<UserService>();
-            Bind<IMappertFactory>().To<MapperFactory>();
+            Bind<IMappertFactory>().To<MapperFactory>().InSingletonScope();
         }
     }
-
 }

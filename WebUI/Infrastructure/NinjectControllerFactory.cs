@@ -22,7 +22,6 @@ namespace WebUI.Infrastructure
 
         protected override IController GetControllerInstance(RequestContext requestContext, Type controllerType)
         {
-     
             return controllerType == null
                 ? null
                 : (IController) _ninjectKernel.Get(controllerType);
@@ -36,9 +35,7 @@ namespace WebUI.Infrastructure
                 new ServiceModule("DefaultConnection", _ninjectKernel)
             };
             _ninjectKernel.Load(modules);
-            _ninjectKernel.Bind<IMapperFactoryWEB>().To<MapperFactoryWEB>();
-
+            _ninjectKernel.Bind<IMapperFactoryWEB>().To<MapperFactoryWEB>().InSingletonScope();
         }
     }
-
 }
