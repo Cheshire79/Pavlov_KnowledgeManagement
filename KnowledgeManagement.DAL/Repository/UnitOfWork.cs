@@ -15,7 +15,8 @@ namespace KnowledgeManagement.DAL.Repository
 
         public UnitOfWork(IFactoryRepository factoryRepository, IDataContext db)
         {
-            _factoryRepository = factoryRepository;           
+           // Debug.WriteLine("Create  UnitOfWork KM");
+            _factoryRepository = factoryRepository;
             _db = db;
         }
 
@@ -52,6 +53,7 @@ namespace KnowledgeManagement.DAL.Repository
 
         public void Dispose()
         {
+           // Debug.WriteLine("dispose  UnitOfWork KM");
             _db.Dispose();
         }
           

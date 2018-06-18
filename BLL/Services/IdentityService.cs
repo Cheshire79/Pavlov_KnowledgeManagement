@@ -6,15 +6,15 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using BLL.Identity.DTO;
-using BLL.Identity.Services.Interfaces;
-using BLL.Identity.Validation;
+using BLL.DTO;
 using BLL.Mapper;
-using DAL.Identity.Entities;
-using DAL.Identity.Interfaces;
+using BLL.Services.Interfaces;
+using BLL.Validation;
+using DAL.Entities;
+using DAL.Interfaces;
 using Microsoft.AspNet.Identity;
 
-namespace BLL.Identity.Services
+namespace BLL.Services
 {
     public class IdentityService : IIdentityService
     {
@@ -55,7 +55,6 @@ namespace BLL.Identity.Services
                     DefaultAuthenticationTypes.ApplicationCookie);
             return claim;
         }
-
 
         public IQueryable<UserDTO> GetUsers()
         {

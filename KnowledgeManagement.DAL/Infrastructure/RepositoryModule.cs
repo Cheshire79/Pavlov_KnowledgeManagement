@@ -25,13 +25,8 @@ namespace KnowledgeManagement.DAL.Infrastructure
             Bind<IRepository<SubSkill>>().To<SubSkillRepository>();
             Bind<IUnitOfWork>().To<UnitOfWork>().InRequestScope();
             Bind<IFactoryRepository>().To<FactoryRepositor>();
-
-         
             Bind<IReadOnlyRepository<Level>>().To<LevelReadOnlyRepository>();
             Bind<IRepository<SpecifyingSkill.Entities.SpecifyingSkill>>().To<SpecifyingSkillRepository>();
-        
-        
-            
         }
     }
 }

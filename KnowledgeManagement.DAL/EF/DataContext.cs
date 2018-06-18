@@ -21,7 +21,7 @@ namespace KnowledgeManagement.DAL.EF
         static DataContext()
         {
             Database.SetInitializer<DataContext>(new StoreDbInitializer());
-        }       
+        }
 
     }
 

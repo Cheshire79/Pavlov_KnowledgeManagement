@@ -1,12 +1,10 @@
 ﻿using System.Diagnostics;
 using AutoMapper;
-using BLL.Identity.DTO;
-using DAL.Identity.Entities;
+using BLL.DTO;
+using DAL.Entities;
 
 namespace BLL.Mapper
 {
-
-
     public class MapperFactory : IMapperFactory
     {
         private IMapper _mapper { get; set; }
@@ -29,17 +27,13 @@ namespace BLL.Mapper
 
             });
             _mapper = config.CreateMapper();
-
         }
 
         public IMapper CreateMapper()
         {
             return _mapper;
         }
-
-
     }
-
 }
 
 

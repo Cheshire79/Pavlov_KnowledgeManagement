@@ -1,6 +1,5 @@
 ﻿
-
-namespace WebUI.Models.SearchForUsers
+namespace WebUI.Models.UsersSearch
 {
     public class SpecifyingSkillForSearchSaveModel
     {

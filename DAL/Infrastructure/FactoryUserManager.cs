@@ -1,11 +1,12 @@
 ﻿using System;
-using DAL.Identity.EF;
-using DAL.Identity.Entities;
+using DAL.EF;
+using DAL.Entities;
+using DAL.Repositories;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Ninject;
 using Ninject.Parameters;
 
-namespace DAL.Identity.Infrastructure
+namespace DAL.Infrastructure
 {
     public interface IFactoryUserManager
     {
@@ -26,8 +27,6 @@ namespace DAL.Identity.Infrastructure
                 _kernel.Get<ApplicationUserManager>(new IParameter[] { new ConstructorArgument("store",                 
                 _kernel.Get<UserStore<ApplicationUser>>(new IParameter[] { new ConstructorArgument("context", applicationContext) })
                 ) });
-
         }
-
     }
 }

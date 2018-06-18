@@ -3,9 +3,8 @@ using AutoMapper;
 using KnowledgeManagement.BLL.DTO;
 using KnowledgeManagement.DAL.Entities;
 
-namespace BLL.Mapper
+namespace KnowledgeManagement.BLL.Mapper
 {
-
 
     public class MapperFactory : IMappertFactory
     {

@@ -3,7 +3,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using WebUI.Binders;
-using WebUI.Models.SearchForUsers;
+using WebUI.Models.UsersSearch;
 
 namespace WebUI
 {

@@ -1,15 +1,13 @@
-﻿@model WebUI.Models.SearchForUsers.UsersSearchResultViewModel
+﻿@model WebUI.Models.UsersSearch.UsersSearchResultViewModel
 
 <div class="user-search-result">
     <div class="title">Users list</div>
 
     <div class="form-horizontal">
-        <!--{ int minLevelId = Model.LevelsViewModel.OrderBy(x => x.Order).First().Id; }
-            && x.LevelId != minLevelId-->
         @foreach (var item in Model.UserSearchListResultViewModel)
         {
             <div class="user-item">
-                <div class="user-info">User name: <b>@item.UserViewModel.Name</b></div>
+                <div class="user-info">User name: <b>@item.User.Name</b></div>
 
                 @foreach (var specifyingSkill in item.SpecifyingSkills)
                 {

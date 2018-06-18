@@ -1,8 +1,7 @@
-﻿
-using BLL.Identity.Services;
-using BLL.Identity.Services.Interfaces;
-using BLL.Mapper;
-using DAL.Identity.Infrastructure;
+﻿using BLL.Mapper;
+using BLL.Services;
+using BLL.Services.Interfaces;
+using DAL.Infrastructure;
 using Ninject;
 using Ninject.Modules;
 

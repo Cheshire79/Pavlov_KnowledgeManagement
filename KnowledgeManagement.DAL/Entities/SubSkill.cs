@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace KnowledgeManagement.DAL.Entities
 {
@@ -15,5 +11,4 @@ namespace KnowledgeManagement.DAL.Entities
         public int SkillId { get; set; }
         public Skill Skill { get; set; }
     }
-   
 }

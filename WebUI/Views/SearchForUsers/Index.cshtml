@@ -1,7 +1,5 @@
-﻿
-
-@using WebUI.Models.SearchForUsers
-@model WebUI.Models.SearchForUsers.SpecifyingSkillsForSearchViewModel
+﻿@using WebUI.Models.UsersSearch
+@model SpecifyingSkillsForSearchViewModel
 
 @{
     ViewBag.Title = "Index";
@@ -23,25 +21,25 @@
             @{ int index = -1; }
             @foreach (var specifyingSkill in Model.SpecifyingSkills)           
             {              
-                if (specifyingSkill.SubSkillListViewModel.Any())
+                if (specifyingSkill.SubSkills.Any())
                 {
                     <div class="subtitle">
-                        @Html.DisplayFor(model => specifyingSkill.SkillViewModel.Name, new {@class = "SkillTitle"})
+                        @Html.DisplayFor(model => specifyingSkill.Skill.Name, new {@class = "SkillTitle"})
                     </div>
                     <div class="skill-scope">
                         @{                            
-                            foreach (var subSkill in specifyingSkill.SubSkillListViewModel)
+                            foreach (var subSkill in specifyingSkill.SubSkills)
                             {
                                 specifyingSkillsForSearchSaveModel.Add(new SpecifyingSkillForSearchSaveModel());                            
                                 index++;                                
-                                specifyingSkillsForSearchSaveModel[index].SubSkillId = subSkill.SubSkillViewModel.Id;
+                                specifyingSkillsForSearchSaveModel[index].SubSkillId = subSkill.SubSkill.Id;
                                 int levelId = subSkill.LevelId;
                                 var selected = Model.LevelsViewModel.FirstOrDefault(x => x.Id == levelId);
                                 SelectList levels = new SelectList(Model.LevelsViewModel, "Id", "Name", selected);
 
                                 <span class="skill-title">
 
-                                    @Html.DisplayFor(model => subSkill.SubSkillViewModel.Name)
+                                    @Html.DisplayFor(model => subSkill.SubSkill.Name)
                                 </span>
                                 <div class="skill-Rating">
                                     has level 

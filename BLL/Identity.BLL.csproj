@@ -65,15 +65,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Identity\DTO\RoleDTO.cs" />
-    <Compile Include="Identity\DTO\UserDTO.cs" />
-    <Compile Include="Identity\Validation\OperationDetails.cs" />
+    <Compile Include="DTO\RoleDTO.cs" />
+    <Compile Include="DTO\UserDTO.cs" />
+    <Compile Include="Validation\OperationDetails.cs" />
     <Compile Include="Infrastructure\IdentityServiceModule.cs" />
     <Compile Include="Mapper\IMapperFactory.cs" />
     <Compile Include="Mapper\MapperFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Identity\Services\IdentityService.cs" />
-    <Compile Include="Identity\Services\Interfaces\IIdentityService.cs" />
+    <Compile Include="Services\IdentityService.cs" />
+    <Compile Include="Services\Interfaces\IIdentityService.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

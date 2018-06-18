@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KnowledgeManagement.BLL.SpecifyingSkill.DTO
+﻿namespace KnowledgeManagement.BLL.SpecifyingSkill.DTO
 {
    
     public class SpecifyingSkillDTO

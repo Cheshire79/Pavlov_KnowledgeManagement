@@ -1,4 +1,4 @@
-﻿@model WebUI.Models.SearchForUsers.UsersSearchResultViewModel
+﻿@model WebUI.Models.UsersSearch.UsersSearchResultViewModel
 
 @{
     ViewBag.Title = "SearchResult";
@@ -8,7 +8,7 @@
 
 @{ Html.RenderPartial("_SearchResultPartial", Model); }
 
-@using (Html.BeginForm("PrintSearch", "SearchForUsers", FormMethod.Post, new { target = "_blank" }))
+@using (Html.BeginForm("PrintSearchResult", "SearchForUsers", FormMethod.Post, new { target = "_blank" }))
 {
 
     <div class="form-horizontal">

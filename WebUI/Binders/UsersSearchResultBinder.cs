@@ -1,6 +1,6 @@
 ﻿
 using System.Web.Mvc;
-using WebUI.Models.SearchForUsers;
+using WebUI.Models.UsersSearch;
 
 namespace WebUI.Binders
 {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using DAL.Repositories;
 
-
-namespace DAL.Identity.Interfaces
+namespace DAL.Interfaces
 {
     public interface IIdentityUnitOfWork : IDisposable
     {

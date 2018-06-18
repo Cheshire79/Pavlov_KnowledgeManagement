@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using BLL.Identity.DTO;
-using BLL.Identity.Validation;
+using BLL.DTO;
+using BLL.Validation;
 
-namespace BLL.Identity.Services.Interfaces
+namespace BLL.Services.Interfaces
 {
     public interface IIdentityService : IDisposable
     {

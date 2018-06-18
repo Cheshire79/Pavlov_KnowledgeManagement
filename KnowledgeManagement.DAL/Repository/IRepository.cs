@@ -8,7 +8,6 @@ namespace KnowledgeManagement.DAL.Repository
     public interface IRepository<T> where T : class
     {
         IQueryable<T> GetAll();
-        
         Task<T> GetByIdAsync(int id);
         void Create(T item);
         Task Update(T item);

@@ -3,8 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using BLL.Mapper;
 using KnowledgeManagement.BLL.DTO;
+using KnowledgeManagement.BLL.Mapper;
 using KnowledgeManagement.DAL.Entities;
 using KnowledgeManagement.DAL.Repository;
 

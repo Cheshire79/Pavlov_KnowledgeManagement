@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using BLL.Identity.Services.Interfaces;
+using BLL.Services.Interfaces;
 using KnowledgeManagement.BLL.SpecifyingSkill.DTO;
 using KnowledgeManagement.BLL.SpecifyingSkill.Services;
 using Rotativa.MVC;
 using WebUI.Mapper;
 using WebUI.Models.KnowledgeManagement;
-using WebUI.Models.SearchForUsers;
 using WebUI.Models.UsersAndRoles;
+using WebUI.Models.UsersSearch;
 
 namespace WebUI.Controllers
 {
@@ -31,23 +31,23 @@ namespace WebUI.Controllers
         [Authorize(Roles = "manager")]
         public async Task<ActionResult> Index()
         {
-            SpecifyingSkillsForSearchViewModel specifyingSkillsViewModel1 = new SpecifyingSkillsForSearchViewModel();
+            SpecifyingSkillsForSearchViewModel specifyingSkillsViewModel = new SpecifyingSkillsForSearchViewModel();
             int minLevelId = (await _userService.GetLevels().OrderBy(x => x.Order).FirstAsync()).Id; // todo to service ?
             // GetIdOfMinimumKnowledgeLevel
 
-            specifyingSkillsViewModel1.LevelsViewModel = _mapper.Map<IEnumerable<LevelDTO>, IEnumerable<LevelViewModel>>
+            specifyingSkillsViewModel.LevelsViewModel = _mapper.Map<IEnumerable<LevelDTO>, IEnumerable<LevelViewModel>>
                 (await _userService.GetLevels().OrderBy(x => x.Order).ToListAsync());
 
-            specifyingSkillsViewModel1.SpecifyingSkills =
+            specifyingSkillsViewModel.SpecifyingSkills =
                 from s in _userService.Skill().ProjectTo<SkillViewModel>(_mapper.ConfigurationProvider)
                 join sk in _userService.SubSkill().ProjectTo<SubSkillViewModel>(_mapper.ConfigurationProvider)
                     on s.Id equals sk.SkillId into g
                 select new SpecifyingSkillForSearchViewModel()
                 {
-                    SkillViewModel = s,
-                    SubSkillListViewModel = g.Select(x => new SpecifyingSubSkillForSearchViewModel()
+                    Skill = s,
+                    SubSkills = g.Select(x => new SpecifyingSubSkillForSearchViewModel()
                     {
-                        SubSkillViewModel = x,
+                        SubSkill = x,
                         LevelId = minLevelId,
                         OrHigher = false
                     })
@@ -77,7 +77,7 @@ namespace WebUI.Controllers
             //        })
             //    };
             //ProjectTo<SubSkillViewModel>(_mapper.ConfigurationProvider)
-            return View(specifyingSkillsViewModel1);
+            return View(specifyingSkillsViewModel);
         }
 
         [HttpPost]
@@ -106,7 +106,7 @@ namespace WebUI.Controllers
                 {
                     usersSearchResultViewModel.UserSearchListResultViewModel.Add(new UserSearchResultViewModel()
                     {
-                        UserViewModel = new UserViewModel()
+                        User = new UserViewModel()
                         {
                             Id = u.Id,
                             Name = u.Name
@@ -133,18 +133,18 @@ namespace WebUI.Controllers
                 }
             }
             // save search result on client side to pass them to PrintSearch
-            usersSearchResult.SpecifyingSkillsForSearchSaveModel =
+            usersSearchResult.SpecifyingSkillsForSearch =
                 usersSearchResultViewModel.SpecifyingSkillsForSearchSaveModel;
-            usersSearchResult.UserSearchListResultViewModel =
+            usersSearchResult.Users =
                 usersSearchResultViewModel.UserSearchListResultViewModel;
             return View("SearchResult", usersSearchResultViewModel);
         }
         [Authorize(Roles = "manager")]
-        public ActionResult PrintSearch(UsersSearchResult usersSearchResult)
+        public ActionResult PrintSearchResult(UsersSearchResult usersSearchResult)
         {
             UsersSearchResultViewModel usersSearchResultViewModel = new UsersSearchResultViewModel();
-            usersSearchResultViewModel.SpecifyingSkillsForSearchSaveModel = usersSearchResult.SpecifyingSkillsForSearchSaveModel;
-            usersSearchResultViewModel.UserSearchListResultViewModel = usersSearchResult.UserSearchListResultViewModel;
+            usersSearchResultViewModel.SpecifyingSkillsForSearchSaveModel = usersSearchResult.SpecifyingSkillsForSearch;
+            usersSearchResultViewModel.UserSearchListResultViewModel = usersSearchResult.Users;
             var report = new ViewAsPdf("_SearchResultPartial", usersSearchResultViewModel);
             return report;
         }

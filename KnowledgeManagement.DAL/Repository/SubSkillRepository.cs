@@ -15,7 +15,6 @@ namespace KnowledgeManagement.DAL.Repository
         public SubSkillRepository(IDataContext context)
         {
             _db = context;
-
         }
 
         public IQueryable<SubSkill> GetAll()

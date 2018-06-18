@@ -1,16 +1,14 @@
 ﻿
 using AutoMapper;
-using BLL.Identity.DTO;
+using BLL.DTO;
 using KnowledgeManagement.BLL.DTO;
-using WebUI.Models.SearchForUsers;
 using KnowledgeManagement.BLL.SpecifyingSkill.DTO;
 using WebUI.Models.KnowledgeManagement;
 using WebUI.Models.UsersAndRoles;
+using WebUI.Models.UsersSearch;
 
 namespace WebUI.Mapper
 {
-
-
     public class MapperFactoryWEB : IMapperFactoryWEB
     {
         private IMapper _mapper { get; set; }

@@ -14,6 +14,5 @@ namespace KnowledgeManagement.DAL.EF
         DbSet<SpecifyingSkill.Entities.SpecifyingSkill> SpecifyingSkills { get; set; }
         int SaveChanges();
         Task<int> SaveChangesAsync();
-
     }
 }

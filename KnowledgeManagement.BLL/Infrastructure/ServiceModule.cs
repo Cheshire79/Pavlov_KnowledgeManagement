@@ -1,4 +1,4 @@
-﻿using BLL.Mapper;
+﻿using KnowledgeManagement.BLL.Mapper;
 using KnowledgeManagement.BLL.Services;
 using KnowledgeManagement.BLL.SpecifyingSkill.Services;
 using KnowledgeManagement.DAL.Infrastructure;
