@@ -88,8 +88,10 @@ namespace BLL.Services
 
         public async Task<IQueryable<UserDTO>> GetUsersInRoleAsync(string roleId)
         {
-
-            var role = await _unitOfWork.RoleManager.Roles.FirstOrDefaultAsync(r => r.Id == roleId);
+            
+            var role = await _unitOfWork.RoleManager.FindByIdAsync(roleId);
+         //   var role = await _unitOfWork.RoleManager.Roles.FirstOrDefaultAsync(r => r.Id == roleId);
+            // how to test this using moq ?
             if (role != null)
             {
                 return (from user in _unitOfWork.UserManager.Users

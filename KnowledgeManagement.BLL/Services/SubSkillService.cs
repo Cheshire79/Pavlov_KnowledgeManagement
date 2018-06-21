@@ -11,7 +11,7 @@ using KnowledgeManagement.DAL.Repository;
 namespace KnowledgeManagement.BLL.Services
 {
 
-    class SubSkillService : ISubSkillService
+    public class SubSkillService : ISubSkillService
     {
         private IUnitOfWork _unitOfWork;
         private IMapper _mapper;
