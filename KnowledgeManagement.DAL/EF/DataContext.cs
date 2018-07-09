@@ -1,11 +1,12 @@
-﻿using System.Data.Entity;
-using System.Linq;
-using KnowledgeManagement.DAL.Entities;
+﻿using KnowledgeManagement.DAL.Entities;
 using KnowledgeManagement.DAL.SpecifyingSkill.Entities;
+using System.Data.Entity;
+using System.Linq;
+using KnowledgeManagement.DAL.Interface;
 
 namespace KnowledgeManagement.DAL.EF
 {
-    public class DataContext : DbContext, IDataContext
+    public class DataContext : DbContext, IDataContext<SubSkill, Skill, Level, SpecifyingSkill.Entities.SpecifyingSkill>
     {
         public DataContext(string connection)
             : base(connection)

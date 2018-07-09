@@ -38,10 +38,6 @@
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="KnowledgeManagement.DAL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\WebUI\Bin\KnowledgeManagement.DAL.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
       <Private>True</Private>
@@ -100,7 +96,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EF\DataContext.cs" />
-    <Compile Include="EF\IDataContext.cs" />
     <Compile Include="Repository\UnitOfWork.cs" />
     <Compile Include="SpecifyingSkill\Entities\Level.cs" />
     <Compile Include="Entities\Skill.cs" />
@@ -125,7 +120,12 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\KnowledgeManagement.DAL.Interface\KnowledgeManagement.DAL.Interface.csproj">
+      <Project>{023d0ab6-eb6c-4d39-a45a-3cc1606de8f6}</Project>
+      <Name>KnowledgeManagement.DAL.Interface</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -38,7 +38,7 @@ namespace WebUI
             {
 
                 kernel.Load(Assembly.GetExecutingAssembly());
-                kernel.Bind<IAuthenticationManager>().ToMethod(x => HttpContext.Current.GetOwinContext().Authentication);
+            //    kernel.Bind<IAuthenticationManager>().ToMethod(x => HttpContext.Current.GetOwinContext().Authentication);
                 ControllerBuilder.Current.SetControllerFactory(new NinjectControllerFactory(kernel));
                 return kernel;
             }

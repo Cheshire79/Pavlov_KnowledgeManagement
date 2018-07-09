@@ -1,19 +1,18 @@
 ﻿using System.Threading.Tasks;
-using KnowledgeManagement.DAL.EF;
 using KnowledgeManagement.DAL.Entities;
 using KnowledgeManagement.DAL.Infrastructure;
 using KnowledgeManagement.DAL.SpecifyingSkill.Entities;
 using KnowledgeManagement.DAL.SpecifyingSkill.Repository;
+using KnowledgeManagement.DAL.Interface;
 
 namespace KnowledgeManagement.DAL.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private IDataContext _db;
+        private IDataContext<SubSkill, Skill, Level, SpecifyingSkill.Entities.SpecifyingSkill> _db;
         private IFactoryRepository _factoryRepository;
 
-
-        public UnitOfWork(IFactoryRepository factoryRepository, IDataContext db)
+        public UnitOfWork(IFactoryRepository factoryRepository, IDataContext<SubSkill, Skill, Level, SpecifyingSkill.Entities.SpecifyingSkill> db)
         {
            // Debug.WriteLine("Create  UnitOfWork KM");
             _factoryRepository = factoryRepository;

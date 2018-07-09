@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using KnowledgeManagement.DAL.EF;
+using KnowledgeManagement.DAL.Entities;
+using KnowledgeManagement.DAL.Interface;
 using KnowledgeManagement.DAL.Repository;
+using KnowledgeManagement.DAL.SpecifyingSkill.Entities;
+
 
 namespace KnowledgeManagement.DAL.SpecifyingSkill.Repository
 {
 
     public class SpecifyingSkillRepository : IRepository<Entities.SpecifyingSkill>
     {
-        private IDataContext _db;
+        private IDataContext<SubSkill, Skill, Level, SpecifyingSkill.Entities.SpecifyingSkill> _db;
 
-        public SpecifyingSkillRepository(IDataContext context)
+        public SpecifyingSkillRepository(IDataContext<SubSkill, Skill, Level, SpecifyingSkill.Entities.SpecifyingSkill> context)
         {
             _db = context;
         }

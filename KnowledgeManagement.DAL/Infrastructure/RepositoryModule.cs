@@ -1,12 +1,11 @@
-﻿
-using KnowledgeManagement.DAL.EF;
+﻿using KnowledgeManagement.DAL.EF;
 using KnowledgeManagement.DAL.Entities;
+using KnowledgeManagement.DAL.Interface;
 using KnowledgeManagement.DAL.Repository;
 using KnowledgeManagement.DAL.SpecifyingSkill.Entities;
 using KnowledgeManagement.DAL.SpecifyingSkill.Repository;
 using Ninject.Modules;
 using Ninject.Web.Common;
-
 
 namespace KnowledgeManagement.DAL.Infrastructure
 {
@@ -20,7 +19,7 @@ namespace KnowledgeManagement.DAL.Infrastructure
 
         public override void Load()
         {
-            Bind<IDataContext>().To<DataContext>().WithConstructorArgument("connection", _connectionString); 
+            Bind<IDataContext<SubSkill, Skill, Level, SpecifyingSkill.Entities.SpecifyingSkill>>().To<DataContext>().WithConstructorArgument("connection", _connectionString); 
             Bind<IRepository<Skill>>().To<SkillRepository>();
             Bind<IRepository<SubSkill>>().To<SubSkillRepository>();
             Bind<IUnitOfWork>().To<UnitOfWork>().InRequestScope();

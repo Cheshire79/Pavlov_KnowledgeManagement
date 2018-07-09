@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using KnowledgeManagement.DAL.EF;
 using KnowledgeManagement.DAL.Entities;
+using KnowledgeManagement.DAL.Interface;
+using KnowledgeManagement.DAL.SpecifyingSkill.Entities;
 
 
 namespace KnowledgeManagement.DAL.Repository
@@ -10,9 +11,9 @@ namespace KnowledgeManagement.DAL.Repository
    
     public class SubSkillRepository : IRepository<SubSkill>
     {
-        private IDataContext _db;
+        private IDataContext<SubSkill, Skill, Level, SpecifyingSkill.Entities.SpecifyingSkill> _db;
 
-        public SubSkillRepository(IDataContext context)
+        public SubSkillRepository(IDataContext<SubSkill, Skill, Level, SpecifyingSkill.Entities.SpecifyingSkill> context)
         {
             _db = context;
         }
