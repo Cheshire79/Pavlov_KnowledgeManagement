@@ -56,21 +56,24 @@
   <ItemGroup>
     <Compile Include="DTO\SkillDTO.cs" />
     <Compile Include="DTO\SubSkillDTO.cs" />
-    <Compile Include="Infrastructure\ServiceModule.cs" />
-    <Compile Include="Mapper\IMapperFactory.cs" />
     <Compile Include="Mapper\MapperFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\ISkillService.cs" />
-    <Compile Include="Services\ISubSkillService.cs" />
     <Compile Include="Services\SkillService.cs" />
     <Compile Include="Services\SubSkillService.cs" />
     <Compile Include="SpecifyingSkill\DTO\LevelDTO.cs" />
     <Compile Include="SpecifyingSkill\DTO\SpecifyingSkillDTO.cs" />
     <Compile Include="SpecifyingSkill\DTO\SpecifyingSkillForSearchDTO.cs" />
-    <Compile Include="SpecifyingSkill\Services\IUserService.cs" />
     <Compile Include="SpecifyingSkill\Services\UserService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\KnowledgeManagement.BLL.Interface\KnowledgeManagement.BLL.Interface.csproj">
+      <Project>{8a1528df-a8a7-4253-b1d1-145ecb504d87}</Project>
+      <Name>KnowledgeManagement.BLL.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KnowledgeManagement.DAL.Interface\KnowledgeManagement.DAL.Interface.csproj">
+      <Project>{023d0ab6-eb6c-4d39-a45a-3cc1606de8f6}</Project>
+      <Name>KnowledgeManagement.DAL.Interface</Name>
+    </ProjectReference>
     <ProjectReference Include="..\KnowledgeManagement.DAL\KnowledgeManagement.DAL.csproj">
       <Project>{617c1ee5-38a0-4d11-9bdf-07d22538b9e4}</Project>
       <Name>KnowledgeManagement.DAL</Name>

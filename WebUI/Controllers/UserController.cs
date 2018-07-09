@@ -3,8 +3,9 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using KnowledgeManagement.BLL.DTO;
+using KnowledgeManagement.BLL.Interface;
 using KnowledgeManagement.BLL.SpecifyingSkill.DTO;
-using KnowledgeManagement.BLL.SpecifyingSkill.Services;
 using Microsoft.AspNet.Identity;
 using WebUI.Models.KnowledgeManagement;
 using WebUI.Models.SpecifyingSkills;
@@ -14,9 +15,9 @@ namespace WebUI.Controllers
 {
     public class UserController : Controller
     {
-        private IUserService _userService;
+        private IUserService<SkillDTO, SubSkillDTO, SpecifyingSkillDTO, LevelDTO, SpecifyingSkillForSearchDTO> _userService;
 
-        public UserController(IUserService managerService)
+        public UserController(IUserService<SkillDTO, SubSkillDTO, SpecifyingSkillDTO, LevelDTO, SpecifyingSkillForSearchDTO> managerService)
         {
             _userService = managerService;
         }

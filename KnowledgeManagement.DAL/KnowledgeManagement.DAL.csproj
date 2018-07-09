@@ -103,12 +103,7 @@
     <Compile Include="Entities\SubSkill.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Infrastructure\FactoryRepository.cs" />
-    <Compile Include="Infrastructure\IFactoryRepository.cs" />
-    <Compile Include="Infrastructure\RepositoryModule.cs" />
-    <Compile Include="Repository\IRepository.cs" />
-    <Compile Include="Repository\IUnitOfWork .cs" />
     <Compile Include="Repository\SkillRepository.cs" />
-    <Compile Include="SpecifyingSkill\Repository\IReadOnlyRepository.cs" />
     <Compile Include="SpecifyingSkill\Repository\LevelRepository.cs" />
     <Compile Include="SpecifyingSkill\Repository\SpecifyingSkillRepository.cs" />
     <Compile Include="Repository\SubSkillRepository.cs" />

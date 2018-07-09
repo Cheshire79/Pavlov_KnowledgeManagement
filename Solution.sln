@@ -7,6 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUI", "WebUI\WebUI.csproj
 	ProjectSection(ProjectDependencies) = postProject
 		{88188321-5931-42E3-A0E2-5FA928B06E69} = {88188321-5931-42E3-A0E2-5FA928B06E69}
 		{C6A2B2A5-7D5C-46CB-9E05-F1CCB7AA157F} = {C6A2B2A5-7D5C-46CB-9E05-F1CCB7AA157F}
+		{023D0AB6-EB6C-4D39-A45A-3CC1606DE8F6} = {023D0AB6-EB6C-4D39-A45A-3CC1606DE8F6}
+		{8A1528DF-A8A7-4253-B1D1-145ECB504D87} = {8A1528DF-A8A7-4253-B1D1-145ECB504D87}
+		{617C1EE5-38A0-4D11-9BDF-07D22538B9E4} = {617C1EE5-38A0-4D11-9BDF-07D22538B9E4}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.DAL", "DAL\Identity.DAL.csproj", "{7A15B9F1-1DA2-4651-BE7B-8E3BCAA0E9C5}"
@@ -23,6 +26,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeManagement.DAL", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeManagement.BLL", "KnowledgeManagement.BLL\KnowledgeManagement.BLL.csproj", "{88188321-5931-42E3-A0E2-5FA928B06E69}"
 	ProjectSection(ProjectDependencies) = postProject
+		{8A1528DF-A8A7-4253-B1D1-145ECB504D87} = {8A1528DF-A8A7-4253-B1D1-145ECB504D87}
 		{617C1EE5-38A0-4D11-9BDF-07D22538B9E4} = {617C1EE5-38A0-4D11-9BDF-07D22538B9E4}
 	EndProjectSection
 EndProject
@@ -40,6 +44,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.BLLTest", "Identit
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeManagement.DAL.Interface", "KnowledgeManagement.DAL.Interface\KnowledgeManagement.DAL.Interface.csproj", "{023D0AB6-EB6C-4D39-A45A-3CC1606DE8F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeManagement.BLL.Interface", "KnowledgeManagement.BLL.Interface\KnowledgeManagement.BLL.Interface.csproj", "{8A1528DF-A8A7-4253-B1D1-145ECB504D87}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,6 +85,10 @@ Global
 		{023D0AB6-EB6C-4D39-A45A-3CC1606DE8F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{023D0AB6-EB6C-4D39-A45A-3CC1606DE8F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{023D0AB6-EB6C-4D39-A45A-3CC1606DE8F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A1528DF-A8A7-4253-B1D1-145ECB504D87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A1528DF-A8A7-4253-B1D1-145ECB504D87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A1528DF-A8A7-4253-B1D1-145ECB504D87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A1528DF-A8A7-4253-B1D1-145ECB504D87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

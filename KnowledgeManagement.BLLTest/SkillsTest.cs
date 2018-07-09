@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using KnowledgeManagement.BLL.DTO;
+using KnowledgeManagement.BLL.Interface;
 using KnowledgeManagement.BLL.Mapper;
 using KnowledgeManagement.BLL.Services;
 using KnowledgeManagement.DAL.Entities;
-using KnowledgeManagement.DAL.Repository;
+using KnowledgeManagement.DAL.Interface;
+using KnowledgeManagement.DAL.SpecifyingSkill.Entities;
 using Moq;
 using NUnit.Framework;
 
@@ -13,8 +16,8 @@ namespace KnowledgeManagement.BLLTest
     [TestFixture]
     public class SkillsTest
     {
-        private ISkillService _skillService;
-        private ISubSkillService _subSkillService;
+        private ISkillService<SkillDTO> _skillService;
+        private ISubSkillService<SubSkillDTO> _subSkillService;
         [SetUp]
         public void SetUp()
         {
@@ -77,7 +80,7 @@ namespace KnowledgeManagement.BLLTest
             subSkillRepositoy.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(
                 (int id) => { return subSkillRepositoy.Object.GetAll().FirstOrDefault(x => x.Id == id); });
 
-            var unitOfWork = new Mock<IUnitOfWork>();
+            var unitOfWork = new Mock<IUnitOfWork<SubSkill, Skill, Level, DAL.SpecifyingSkill.Entities.SpecifyingSkill>>();
             unitOfWork.Setup(x => x.Skills).Returns(skillRepositoy.Object);
             unitOfWork.Setup(x => x.SubSkills).Returns(subSkillRepositoy.Object);
             _skillService = new SkillService(unitOfWork.Object, new MapperFactory());

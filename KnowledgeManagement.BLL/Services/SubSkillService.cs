@@ -4,19 +4,20 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using KnowledgeManagement.BLL.DTO;
-using KnowledgeManagement.BLL.Mapper;
+using KnowledgeManagement.BLL.Interface;
 using KnowledgeManagement.DAL.Entities;
-using KnowledgeManagement.DAL.Repository;
+using KnowledgeManagement.DAL.Interface;
+using KnowledgeManagement.DAL.SpecifyingSkill.Entities;
 
 namespace KnowledgeManagement.BLL.Services
 {
 
-    public class SubSkillService : ISubSkillService
+    public class SubSkillService : ISubSkillService<SubSkillDTO>
     {
-        private IUnitOfWork _unitOfWork;
+        private IUnitOfWork<SubSkill, Skill, Level, KnowledgeManagement.DAL.SpecifyingSkill.Entities.SpecifyingSkill> _unitOfWork;
         private IMapper _mapper;
 
-        public SubSkillService(IUnitOfWork unitOfWork, IMappertFactory mapperFactory)
+        public SubSkillService(IUnitOfWork<SubSkill, Skill, Level, DAL.SpecifyingSkill.Entities.SpecifyingSkill> unitOfWork, IMappertFactory mapperFactory)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapperFactory.CreateMapper();

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace KnowledgeManagement.BLL.Mapper
+namespace KnowledgeManagement.BLL.Interface
 {
     public interface IMappertFactory
     {

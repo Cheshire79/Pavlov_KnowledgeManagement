@@ -1,9 +1,7 @@
-﻿
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 
-
-namespace KnowledgeManagement.DAL.SpecifyingSkill.Repository
+namespace KnowledgeManagement.DAL.Interface
 {
     public interface IReadOnlyRepository<T> where T : class
     {

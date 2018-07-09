@@ -1,16 +1,12 @@
-﻿
-using KnowledgeManagement.DAL.Entities;
+﻿using KnowledgeManagement.DAL.Entities;
 using KnowledgeManagement.DAL.Interface;
-using KnowledgeManagement.DAL.Repository;
 using KnowledgeManagement.DAL.SpecifyingSkill.Entities;
-using KnowledgeManagement.DAL.SpecifyingSkill.Repository;
 using Ninject;
 using Ninject.Parameters;
 
-
 namespace KnowledgeManagement.DAL.Infrastructure
 {
-    public class FactoryRepositor : IFactoryRepository
+    public class FactoryRepositor : IFactoryRepository<SubSkill, Skill, Level, SpecifyingSkill.Entities.SpecifyingSkill>
     {
         private readonly IKernel _kernel;
 
@@ -35,8 +31,6 @@ namespace KnowledgeManagement.DAL.Infrastructure
         public IRepository<SpecifyingSkill.Entities.SpecifyingSkill> CreateSpecifyingSkillRepository(IDataContext<SubSkill, Skill, Level, SpecifyingSkill.Entities.SpecifyingSkill> dataContext)
         {
             return _kernel.Get<IRepository<SpecifyingSkill.Entities.SpecifyingSkill>>(new IParameter[] { new ConstructorArgument("context", dataContext) });
-
         }
-
     }
 }

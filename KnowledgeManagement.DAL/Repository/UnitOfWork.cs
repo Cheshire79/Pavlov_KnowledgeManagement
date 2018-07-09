@@ -1,18 +1,16 @@
 ﻿using System.Threading.Tasks;
 using KnowledgeManagement.DAL.Entities;
-using KnowledgeManagement.DAL.Infrastructure;
 using KnowledgeManagement.DAL.SpecifyingSkill.Entities;
-using KnowledgeManagement.DAL.SpecifyingSkill.Repository;
 using KnowledgeManagement.DAL.Interface;
 
 namespace KnowledgeManagement.DAL.Repository
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : IUnitOfWork<SubSkill, Skill, Level, SpecifyingSkill.Entities.SpecifyingSkill>
     {
         private IDataContext<SubSkill, Skill, Level, SpecifyingSkill.Entities.SpecifyingSkill> _db;
-        private IFactoryRepository _factoryRepository;
+        private IFactoryRepository<SubSkill, Skill, Level, SpecifyingSkill.Entities.SpecifyingSkill> _factoryRepository;
 
-        public UnitOfWork(IFactoryRepository factoryRepository, IDataContext<SubSkill, Skill, Level, SpecifyingSkill.Entities.SpecifyingSkill> db)
+        public UnitOfWork(IFactoryRepository<SubSkill, Skill, Level, SpecifyingSkill.Entities.SpecifyingSkill> factoryRepository, IDataContext<SubSkill, Skill, Level, SpecifyingSkill.Entities.SpecifyingSkill> db)
         {
            // Debug.WriteLine("Create  UnitOfWork KM");
             _factoryRepository = factoryRepository;
@@ -31,10 +29,8 @@ namespace KnowledgeManagement.DAL.Repository
             get { return _subSkillRepository ?? (_subSkillRepository = _factoryRepository.CreateSubSkillRepository(_db)); }
         }
 
-     
         private IReadOnlyRepository<Level> _levelRepository;
         private IRepository<SpecifyingSkill.Entities.SpecifyingSkill> _specifyingSkillRepository;
-
 
         public IReadOnlyRepository<Level> Levels
         {
@@ -55,6 +51,5 @@ namespace KnowledgeManagement.DAL.Repository
            // Debug.WriteLine("dispose  UnitOfWork KM");
             _db.Dispose();
         }
-          
     }
 }

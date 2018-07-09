@@ -73,9 +73,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\KnowledgeManagement.BLL.Interface\KnowledgeManagement.BLL.Interface.csproj">
+      <Project>{8A1528DF-A8A7-4253-B1D1-145ECB504D87}</Project>
+      <Name>KnowledgeManagement.BLL.Interface</Name>
+    </ProjectReference>
     <ProjectReference Include="..\KnowledgeManagement.BLL\KnowledgeManagement.BLL.csproj">
       <Project>{88188321-5931-42E3-A0E2-5FA928B06E69}</Project>
       <Name>KnowledgeManagement.BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KnowledgeManagement.DAL.Interface\KnowledgeManagement.DAL.Interface.csproj">
+      <Project>{023D0AB6-EB6C-4D39-A45A-3CC1606DE8F6}</Project>
+      <Name>KnowledgeManagement.DAL.Interface</Name>
     </ProjectReference>
     <ProjectReference Include="..\KnowledgeManagement.DAL\KnowledgeManagement.DAL.csproj">
       <Project>{617C1EE5-38A0-4D11-9BDF-07D22538B9E4}</Project>

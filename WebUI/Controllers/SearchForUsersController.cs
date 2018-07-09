@@ -6,8 +6,9 @@ using System.Web.Mvc;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using BLL.Services.Interfaces;
+using KnowledgeManagement.BLL.DTO;
+using KnowledgeManagement.BLL.Interface;
 using KnowledgeManagement.BLL.SpecifyingSkill.DTO;
-using KnowledgeManagement.BLL.SpecifyingSkill.Services;
 using Rotativa.MVC;
 using WebUI.Mapper;
 using WebUI.Models.KnowledgeManagement;
@@ -18,11 +19,11 @@ namespace WebUI.Controllers
 {
     public class SearchForUsersController : Controller
     {
-        private IUserService _userService;
+        private IUserService<SkillDTO, SubSkillDTO, SpecifyingSkillDTO, LevelDTO, SpecifyingSkillForSearchDTO> _userService;
         private IIdentityService _identityService;
         private IMapper _mapper;
 
-        public SearchForUsersController(IUserService userService, IIdentityService identityService, IMapperFactoryWEB mapperFactory)
+        public SearchForUsersController(IUserService<SkillDTO, SubSkillDTO, SpecifyingSkillDTO, LevelDTO, SpecifyingSkillForSearchDTO> userService, IIdentityService identityService, IMapperFactoryWEB mapperFactory)
         {
             _userService = userService;
             _identityService = identityService;

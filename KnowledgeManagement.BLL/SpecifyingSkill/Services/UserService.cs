@@ -3,17 +3,20 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using KnowledgeManagement.BLL.DTO;
+using KnowledgeManagement.BLL.Interface;
 using KnowledgeManagement.BLL.SpecifyingSkill.DTO;
-using KnowledgeManagement.DAL.Repository;
+using KnowledgeManagement.DAL.Entities;
+using KnowledgeManagement.DAL.Interface;
+using KnowledgeManagement.DAL.SpecifyingSkill.Entities;
 
 
 namespace KnowledgeManagement.BLL.SpecifyingSkill.Services
 {
-    public class UserService : IUserService
+    public class UserService : IUserService<SkillDTO, SubSkillDTO, SpecifyingSkillDTO, LevelDTO, SpecifyingSkillForSearchDTO>
     {
-        private IUnitOfWork _unitOfWork;
+        private IUnitOfWork<SubSkill, Skill, Level, KnowledgeManagement.DAL.SpecifyingSkill.Entities.SpecifyingSkill> _unitOfWork;
 
-        public UserService(IUnitOfWork unitOfWork)
+        public UserService(IUnitOfWork<SubSkill, Skill, Level, DAL.SpecifyingSkill.Entities.SpecifyingSkill> unitOfWork)
         {            
             _unitOfWork = unitOfWork;
         }
@@ -79,7 +82,6 @@ namespace KnowledgeManagement.BLL.SpecifyingSkill.Services
 
         public IQueryable<SpecifyingSkillDTO> GetSpecifyingSkills()
         {
-
             return _unitOfWork.SpecifyingSkills.GetAll().Select(x => new SpecifyingSkillDTO()
             {
                 Id = x.Id,
@@ -115,8 +117,6 @@ namespace KnowledgeManagement.BLL.SpecifyingSkill.Services
                                             select gr.Key);
 
             var test = usersId2.ToList();
-
-
 
 
             #endregion

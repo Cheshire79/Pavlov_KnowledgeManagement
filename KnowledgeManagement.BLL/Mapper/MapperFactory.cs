@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using AutoMapper;
 using KnowledgeManagement.BLL.DTO;
+using KnowledgeManagement.BLL.Interface;
 using KnowledgeManagement.DAL.Entities;
 
 namespace KnowledgeManagement.BLL.Mapper
