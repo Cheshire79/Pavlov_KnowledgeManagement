@@ -103,42 +103,47 @@ namespace WebUI.Controllers
                                                        on id equals user.Id
                                                    select user;
 
-                foreach (var u in Users)
+                usersSearchResultViewModel.UserSearchListResultViewModel = (from u in Users select new UserSearchResultViewModel()
                 {
-                    usersSearchResultViewModel.UserSearchListResultViewModel.Add(new UserSearchResultViewModel()
+                    User = new UserViewModel()
                     {
-                        User = new UserViewModel()
-                        {
-                            Id = u.Id,
-                            Name = u.Name
-                        },
-                        SpecifyingSkills = (from s in _userService.Skill().ProjectTo<SkillViewModel>(_mapper.ConfigurationProvider)
-                                            join osk in
-                                                (from sk in _userService.SubSkill().ProjectTo<SubSkillViewModel>(_mapper.ConfigurationProvider)
-                                                 join spk in _userService.GetSpecifyingSkills().Where(x => x.UserId == u.Id)
-                                                     on sk.Id equals spk.SubSkillId
-                                                 join lvl in _userService.GetLevels()
-                                                     on spk.LevelId equals lvl.Id
-                                                 select new SpecifyingSubSkillViewModel
-                                                 {
-                                                     SubSkill = sk,
-                                                     LevelId = spk.LevelId
-                                                 })
-                                                on s.Id equals osk.SubSkill.SkillId into g
-                                            select new SpecifyingSkillViewModel()
-                                            {
-                                                Skill = s,
-                                                SpecifyingSubSkills = g.ToList()
-                                            }).ToList()
-                    });
-                }
+                        Id = u.Id,
+                        Name = u.Name
+                    },
+                    SpecifyingSkills = GetFilledSpecifyingSkillsForUser(u.Id)
+                }).ToList();
             }
+
             // save search result on client side to pass them to PrintSearch
             usersSearchResult.SpecifyingSkillsForSearch =
                 usersSearchResultViewModel.SpecifyingSkillsForSearchSaveModel;
             usersSearchResult.Users =
                 usersSearchResultViewModel.UserSearchListResultViewModel;
             return View("SearchResult", usersSearchResultViewModel);
+        }
+
+        private IEnumerable<SpecifyingSkillViewModel> GetFilledSpecifyingSkillsForUser(string iserId)
+        {
+            var specifyingSkills = (from s in _userService.Skill().ProjectTo<SkillViewModel>(_mapper.ConfigurationProvider)
+                                    join osk in
+                                        (from sk in _userService.SubSkill().ProjectTo<SubSkillViewModel>(_mapper.ConfigurationProvider)
+                                         join spk in _userService.GetSpecifyingSkills().Where(x => x.UserId == iserId)
+                         on sk.Id equals spk.SubSkillId
+                                         join lvl in _userService.GetLevels()
+                         on spk.LevelId equals lvl.Id
+                                         select new SpecifyingSubSkillViewModel
+                                         {
+                                             SubSkill = sk,
+                                             LevelId = spk.LevelId
+                                         })
+                                        on s.Id equals osk.SubSkill.SkillId into g
+                                    select new SpecifyingSkillViewModel()
+                                    {
+                                        Skill = s,
+                                        SpecifyingSubSkills = g.ToList()
+                                    }).ToList();
+
+            return specifyingSkills;
         }
         [Authorize(Roles = "manager")]
         public ActionResult PrintSearchResult(UsersSearchResult usersSearchResult)

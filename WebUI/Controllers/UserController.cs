@@ -3,10 +3,13 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using KnowledgeManagement.BLL.DTO;
 using KnowledgeManagement.BLL.Interface;
 using KnowledgeManagement.BLL.SpecifyingSkill.DTO;
 using Microsoft.AspNet.Identity;
+using WebUI.Mapper;
 using WebUI.Models.KnowledgeManagement;
 using WebUI.Models.SpecifyingSkills;
 using WebUI.Models.SpecifyingSkills.SaveViewModel;
@@ -16,70 +19,62 @@ namespace WebUI.Controllers
     public class UserController : Controller
     {
         private IUserService<SkillDTO, SubSkillDTO, SpecifyingSkillDTO, LevelDTO, SpecifyingSkillForSearchDTO> _userService;
-
-        public UserController(IUserService<SkillDTO, SubSkillDTO, SpecifyingSkillDTO, LevelDTO, SpecifyingSkillForSearchDTO> managerService)
+        private IMapper _mapper;
+        public UserController(IUserService<SkillDTO, SubSkillDTO, SpecifyingSkillDTO, LevelDTO, SpecifyingSkillForSearchDTO> managerService, IMapperFactoryWEB mapperFactory)
         {
             _userService = managerService;
+            _mapper = mapperFactory.CreateMapperWEB();
         }
 
         [Authorize(Roles = "user")]
         public async Task<ActionResult> Index()
         {
             SpecifyingSkillsViewModel specifyingSkillsViewModel = new SpecifyingSkillsViewModel();
-           
-                string currentUserId = HttpContext.User.Identity.GetUserId();
-                int minLevelId = await _userService.GetIdForMinLevelValue();
 
-                specifyingSkillsViewModel.Levels = await _userService.GetLevels().OrderBy(x => x.Order)
-                    .Select(x => new LevelViewModel()//todo mapping
-                    {
-                        Id = x.Id,
-                        Name = x.Name
-                    }).ToListAsync(); 
+            string currentUserId = HttpContext.User.Identity.GetUserId();
+            int minLevelId = await _userService.GetIdForMinLevelValue();
 
-                specifyingSkillsViewModel.SpecifyingSkills =
-                   await (from skill in _userService.Skill()
-                    join specifyingSkillViewModel in
-                        (from subSkill in _userService.SubSkill()
-                         join specifyingSkill in _userService.GetSpecifyingSkills().Where(x => x.UserId == currentUserId)
-                             on subSkill.Id equals specifyingSkill.SubSkillId into specifyingSkillsDTO
-                         select new SpecifyingSubSkillViewModel
-                         {
-                             SubSkill = new SubSkillViewModel()//todo mapping
-                             {
-                                 Id = subSkill.Id,
-                                 Name = subSkill.Name,
-                                 SkillId = subSkill.SkillId
-                             },
-                             LevelId =
-                                 specifyingSkillsDTO.DefaultIfEmpty(new SpecifyingSkillDTO()
-                                     {
-                                         Id = 0,
-                                         LevelId = minLevelId,
-                                         SubSkillId = 0,
-                                         UserId = ""
-                                     }).FirstOrDefault().LevelId
-                             // absent of  SpecifyingSkillDTO means that user has no skill.
-                             // as skell "None" storage at first minimum order  at database
-                         })
+            specifyingSkillsViewModel.Levels = _mapper.Map<IEnumerable<LevelDTO>, IEnumerable<LevelViewModel>>
+                (await _userService.GetLevels().OrderBy(x => x.Order).ToListAsync());
+
+            specifyingSkillsViewModel.SpecifyingSkills =
+                   await (from skill in _userService.Skill().ProjectTo<SkillViewModel>(_mapper.ConfigurationProvider)
+                          join specifyingSkillViewModel in GetSpecifyingSubSkillsForUser(currentUserId, minLevelId)
                         on skill.Id equals specifyingSkillViewModel.SubSkill.SkillId into specifyingSubSkillViewModel
-                    select new SpecifyingSkillViewModel()
-                    {
-                        Skill = new SkillViewModel()//todo mapping
-                        {
-                            Id = skill.Id,
-                            Name = skill.Name
-                        },
-                        SpecifyingSubSkills = specifyingSubSkillViewModel.ToList()
-                    }).ToListAsync();
-
-                //select * from skills
-                //left join SubSkills on skills.Id=SubSkills.SkillId
-                //left join  SpecifyingSkills on SpecifyingSkills.SubSkillId=SubSkills.Id 
-
+                          select new SpecifyingSkillViewModel()
+                          {
+                              Skill = skill,
+                              SpecifyingSubSkills = specifyingSubSkillViewModel.ToList()
+                          }).ToListAsync();
+            //select * from skills
+            //left join SubSkills on skills.Id=SubSkills.SkillId
+            //left join  SpecifyingSkills on SpecifyingSkills.SubSkillId=SubSkills.Id 
             return View(specifyingSkillsViewModel);
-
         }
+
+        private IQueryable<SpecifyingSubSkillViewModel> GetSpecifyingSubSkillsForUser(string iserId, int minLevelId)
+        {
+            var formForSpecifyingSubSkills =
+                (from subSkill in _userService.SubSkill().ProjectTo<SubSkillViewModel>(_mapper.ConfigurationProvider)
+                 join specifyingSkill in _userService.GetSpecifyingSkills().Where(x => x.UserId == iserId)
+                     on subSkill.Id equals specifyingSkill.SubSkillId into specifyingSkillsDTO
+                 select new SpecifyingSubSkillViewModel
+                 {
+                     SubSkill = subSkill,
+                     LevelId =
+                         specifyingSkillsDTO.DefaultIfEmpty(new SpecifyingSkillDTO()
+                         {
+                             Id = 0,
+                             LevelId = minLevelId,
+                             SubSkillId = 0,
+                             UserId = ""
+                         }).FirstOrDefault().LevelId
+                     // absent of  SpecifyingSkillDTO means that user has no skill.
+                     // as skell "None" storage at first minimum order  at database
+                 });
+            return formForSpecifyingSubSkills;
+        }
+
         [HttpPost]
         [Authorize(Roles = "user")]
         //  public async Task<ActionResult> Index(SpecifyingSkillsViewModel specifyingSkillsViewModel
