@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using BLL.Services.Interfaces;
+using BLL.Validation;
+using Identity.BLL.Data;
+using Identity.BLL.Interface;
 using KnowledgeManagement.BLL.DTO;
 using KnowledgeManagement.BLL.Interface;
 using KnowledgeManagement.BLL.SpecifyingSkill.DTO;
@@ -20,10 +23,11 @@ namespace WebUI.Controllers
     public class SearchForUsersController : Controller
     {
         private IUserService<SkillDTO, SubSkillDTO, SpecifyingSkillDTO, LevelDTO, SpecifyingSkillForSearchDTO> _userService;
-        private IIdentityService _identityService;
+        private IIdentityService<OperationDetails, ClaimsIdentity, User, Role> _identityService;
         private IMapper _mapper;
 
-        public SearchForUsersController(IUserService<SkillDTO, SubSkillDTO, SpecifyingSkillDTO, LevelDTO, SpecifyingSkillForSearchDTO> userService, IIdentityService identityService, IMapperFactoryWEB mapperFactory)
+        public SearchForUsersController(IUserService<SkillDTO, SubSkillDTO, SpecifyingSkillDTO, LevelDTO, SpecifyingSkillForSearchDTO> userService, 
+            IIdentityService<OperationDetails, ClaimsIdentity, User, Role> identityService, IMapperFactoryWEB mapperFactory)
         {
             _userService = userService;
             _identityService = identityService;

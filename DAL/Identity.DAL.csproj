@@ -7,8 +7,8 @@
     <ProjectGuid>{7A15B9F1-1DA2-4651-BE7B-8E3BCAA0E9C5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DAL</RootNamespace>
-    <AssemblyName>DAL</AssemblyName>
+    <RootNamespace>Identity.DAL</RootNamespace>
+    <AssemblyName>Identity.DAL</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -108,12 +108,15 @@
     <Compile Include="Entities\ApplicationRole.cs" />
     <Compile Include="Entities\ApplicationUser.cs" />
     <Compile Include="Infrastructure\FactoryUserManager.cs" />
-    <Compile Include="Infrastructure\IdentityRepositoryModule.cs" />
-    <Compile Include="Interfaces\IIdentityUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\IdentityUnitOfWork.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Identity.DAL.Interface\Identity.DAL.Interface.csproj">
+      <Project>{a35855e4-0655-4ac9-b1ca-a1c2b833e8dc}</Project>
+      <Name>Identity.DAL.Interface</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />

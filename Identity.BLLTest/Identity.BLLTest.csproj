@@ -87,6 +87,14 @@
       <Project>{7A15B9F1-1DA2-4651-BE7B-8E3BCAA0E9C5}</Project>
       <Name>Identity.DAL</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Identity.BLL.Interface\Identity.BLL.Interface.csproj">
+      <Project>{81DF033D-CC80-4805-8DF4-95D9C946228D}</Project>
+      <Name>Identity.BLL.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Identity.DAL.Interface\Identity.DAL.Interface.csproj">
+      <Project>{A35855E4-0655-4AC9-B1CA-A1C2B833E8DC}</Project>
+      <Name>Identity.DAL.Interface</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

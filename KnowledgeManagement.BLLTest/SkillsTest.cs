@@ -80,7 +80,7 @@ namespace KnowledgeManagement.BLLTest
             subSkillRepositoy.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(
                 (int id) => { return subSkillRepositoy.Object.GetAll().FirstOrDefault(x => x.Id == id); });
 
-            var unitOfWork = new Mock<IUnitOfWork<SubSkill, Skill, Level, DAL.SpecifyingSkill.Entities.SpecifyingSkill>>();
+            var unitOfWork = new Mock<IUnitOfWork<SubSkill, Skill, Level, KnowledgeManagement.DAL.SpecifyingSkill.Entities.SpecifyingSkill>>();
             unitOfWork.Setup(x => x.Skills).Returns(skillRepositoy.Object);
             unitOfWork.Setup(x => x.SubSkills).Returns(subSkillRepositoy.Object);
             _skillService = new SkillService(unitOfWork.Object, new MapperFactory());

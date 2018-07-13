@@ -16,8 +16,8 @@ namespace KnowledgeManagement.BLL.SpecifyingSkill.Services
     {
         private IUnitOfWork<SubSkill, Skill, Level, KnowledgeManagement.DAL.SpecifyingSkill.Entities.SpecifyingSkill> _unitOfWork;
 
-        public UserService(IUnitOfWork<SubSkill, Skill, Level, DAL.SpecifyingSkill.Entities.SpecifyingSkill> unitOfWork)
-        {            
+        public UserService(IUnitOfWork<SubSkill, Skill, Level, KnowledgeManagement.DAL.SpecifyingSkill.Entities.SpecifyingSkill> unitOfWork)
+        {
             _unitOfWork = unitOfWork;
         }
 
@@ -70,7 +70,7 @@ namespace KnowledgeManagement.BLL.SpecifyingSkill.Services
             {
                 if ((await _unitOfWork.Levels.GetByIdAsync(item.LevelId)).Order > min) // save into base only if skill higher then first 
                     // first level means that user has no experience 
-                    _unitOfWork.SpecifyingSkills.Create(new DAL.SpecifyingSkill.Entities.SpecifyingSkill()
+                    _unitOfWork.SpecifyingSkills.Create(new KnowledgeManagement.DAL.SpecifyingSkill.Entities.SpecifyingSkill()
                     {
                         LevelId = item.LevelId,
                         SubSkillId = item.SubSkillId,

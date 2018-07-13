@@ -1,7 +1,7 @@
-﻿using DAL.Entities;
+﻿using Identity.DAL.Entities;
 using Microsoft.AspNet.Identity.EntityFramework;
 
-namespace DAL.EF
+namespace Identity.DAL.EF
 {
     public class ApplicationContext: IdentityDbContext<ApplicationUser>
     {

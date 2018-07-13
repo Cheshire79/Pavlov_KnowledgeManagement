@@ -7,8 +7,8 @@
     <ProjectGuid>{C6A2B2A5-7D5C-46CB-9E05-F1CCB7AA157F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BLL</RootNamespace>
-    <AssemblyName>BLL</AssemblyName>
+    <RootNamespace>Identity.BLL</RootNamespace>
+    <AssemblyName>Identity.BLL</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -65,21 +65,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DTO\RoleDTO.cs" />
-    <Compile Include="DTO\UserDTO.cs" />
+    <Compile Include="Data\Role.cs" />
+    <Compile Include="Data\UserDTO.cs" />
     <Compile Include="Validation\OperationDetails.cs" />
-    <Compile Include="Infrastructure\IdentityServiceModule.cs" />
-    <Compile Include="Mapper\IMapperFactory.cs" />
     <Compile Include="Mapper\MapperFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IdentityService.cs" />
-    <Compile Include="Services\Interfaces\IIdentityService.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\DAL\Identity.DAL.csproj">
       <Project>{7a15b9f1-1da2-4651-be7b-8e3bcaa0e9c5}</Project>
       <Name>Identity.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Identity.BLL.Interface\Identity.BLL.Interface.csproj">
+      <Project>{81DF033D-CC80-4805-8DF4-95D9C946228D}</Project>
+      <Name>Identity.BLL.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Identity.DAL.Interface\Identity.DAL.Interface.csproj">
+      <Project>{A35855E4-0655-4AC9-B1CA-A1C2B833E8DC}</Project>
+      <Name>Identity.DAL.Interface</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

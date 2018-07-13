@@ -1,9 +1,10 @@
 ﻿using System.Diagnostics;
 using AutoMapper;
-using BLL.DTO;
-using DAL.Entities;
+using Identity.BLL.Data;
+using Identity.BLL.Interface;
+using Identity.DAL.Entities;
 
-namespace BLL.Mapper
+namespace Identity.BLL.Mapper
 {
     public class MapperFactory : IMapperFactory
     {
@@ -12,16 +13,16 @@ namespace BLL.Mapper
         {
             var config = new MapperConfiguration(cfg =>
             {
-                Debug.WriteLine("Mapper Identity BLL");
-                cfg.CreateMap<ApplicationUser, UserDTO>().ForMember(x => x.Name,
+               // Debug.WriteLine("Mapper Identity BLL");
+                cfg.CreateMap<ApplicationUser, User>().ForMember(x => x.Name,
                     x => x.MapFrom(m => m.UserName)).ForMember(x => x.Id,
                     x => x.MapFrom(m => m.Id));
 
-                cfg.CreateMap<ApplicationRole, RoleDTO>().ForMember(x => x.Name,
+                cfg.CreateMap<ApplicationRole, Role>().ForMember(x => x.Name,
                     x => x.MapFrom(m => m.Name)).ForMember(x => x.Id,
                     x => x.MapFrom(m => m.Id));
 
-                cfg.CreateMap<UserDTO, ApplicationUser>().ForMember(x => x.UserName,
+                cfg.CreateMap<User, ApplicationUser>().ForMember(x => x.UserName,
                     x => x.MapFrom(m => m.Name)).ForMember(x => x.Id,
                     x => x.MapFrom(m => m.Id));
 

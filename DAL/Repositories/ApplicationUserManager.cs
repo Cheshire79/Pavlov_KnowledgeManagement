@@ -1,7 +1,7 @@
-﻿using DAL.Entities;
+﻿using Identity.DAL.Entities;
 using Microsoft.AspNet.Identity;
 
-namespace DAL.Repositories
+namespace Identity.DAL.Repositories
 {
     public class ApplicationUserManager : UserManager<ApplicationUser>
     {

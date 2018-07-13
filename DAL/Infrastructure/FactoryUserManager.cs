@@ -1,22 +1,19 @@
 ﻿using System;
-using DAL.EF;
-using DAL.Entities;
-using DAL.Repositories;
+using Identity.DAL.EF;
+using Identity.DAL.Entities;
+using Identity.DAL.Repositories;
+using Identity.DAL.Interface;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Ninject;
 using Ninject.Parameters;
 
-namespace DAL.Infrastructure
+namespace Identity.DAL.Infrastructure
 {
-    public interface IFactoryUserManager
-    {
-        ApplicationUserManager CreateUserStore(ApplicationContext applicationContext);
-    }
-    public class FactoryUserManager : IFactoryUserManager
+    public class FactoryEntitiesManager : IFactoryEntitiesManager<ApplicationUserManager, ApplicationRoleManager, ApplicationContext>
     {
         private readonly IKernel _kernel;
 
-        public FactoryUserManager(IKernel kernel)
+        public FactoryEntitiesManager(IKernel kernel)
         {
             Console.WriteLine(" Factory Service");
             _kernel = kernel;
@@ -24,9 +21,17 @@ namespace DAL.Infrastructure
         public ApplicationUserManager CreateUserStore(ApplicationContext applicationContext)
         {
             return
-                _kernel.Get<ApplicationUserManager>(new IParameter[] { new ConstructorArgument("store",                 
+                _kernel.Get<ApplicationUserManager>(new IParameter[] { new ConstructorArgument("store",
                 _kernel.Get<UserStore<ApplicationUser>>(new IParameter[] { new ConstructorArgument("context", applicationContext) })
                 ) });
         }
+        public ApplicationRoleManager CreateRoleStore(ApplicationContext applicationContext)
+        {
+            return
+                _kernel.Get<ApplicationRoleManager>(new IParameter[] { new ConstructorArgument("store",
+                    _kernel.Get<RoleStore<ApplicationRole>>(new IParameter[] { new ConstructorArgument("context", applicationContext) })
+                ) });
+        }
+
     }
 }

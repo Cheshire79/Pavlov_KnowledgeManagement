@@ -1,39 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using BLL.DTO;
-using BLL.Mapper;
-using BLL.Services.Interfaces;
 using BLL.Validation;
-using DAL.Entities;
-using DAL.Interfaces;
+using Identity.BLL.Data;
+using Identity.BLL.Interface;
+using Identity.DAL.Entities;
+using Identity.DAL.Interface;
+using Identity.DAL.Repositories;
 using Microsoft.AspNet.Identity;
 
-namespace BLL.Services
+namespace Identity.BLL.Services
 {
-    public class IdentityService : IIdentityService
+    public class IdentityService : IIdentityService<OperationDetails, ClaimsIdentity, User, Role>
     {
         private string adminRoleName = "admin";
-        private IIdentityUnitOfWork _unitOfWork { get; set; }
+        private IIdentityUnitOfWork<ApplicationUserManager, ApplicationRoleManager> _unitOfWork { get; set; }
         private IMapper _mapper;
 
-        public IdentityService(IIdentityUnitOfWork uow, IMapperFactory mapperFactory)
+        public IdentityService(IIdentityUnitOfWork<ApplicationUserManager, ApplicationRoleManager> uow, IMapperFactory mapperFactory)
         {
             _unitOfWork = uow;
             _mapper = mapperFactory.CreateMapper();
         }
 
-        public async Task<OperationDetails> Create(UserDTO userDto)
+        public async Task<OperationDetails> Create(User userDto)
         {
             ApplicationUser user = await _unitOfWork.UserManager.FindByNameAsync(userDto.Name);
             if (user == null)
             {
-                user = _mapper.Map<UserDTO, ApplicationUser>(userDto);
+                user = _mapper.Map<User, ApplicationUser>(userDto);
                 user.Id = new ApplicationUser().Id;
                 await _unitOfWork.UserManager.CreateAsync(user, userDto.Password);
                 await _unitOfWork.UserManager.AddToRoleAsync(user.Id, userDto.RoleByDefault);
@@ -46,7 +45,7 @@ namespace BLL.Services
             }
         }
 
-        public async Task<ClaimsIdentity> Authenticate(UserDTO userDto)
+        public async Task<ClaimsIdentity> Authenticate(User userDto)
         {
             ClaimsIdentity claim = null;
             ApplicationUser user = await _unitOfWork.UserManager.FindAsync(userDto.Name, userDto.Password);
@@ -56,14 +55,14 @@ namespace BLL.Services
             return claim;
         }
 
-        public IQueryable<UserDTO> GetUsers()
+        public IQueryable<User> GetUsers()
         {
-            return _unitOfWork.UserManager.Users.ProjectTo<UserDTO>(_mapper.ConfigurationProvider);
+            return _unitOfWork.UserManager.Users.ProjectTo<User>(_mapper.ConfigurationProvider);
         }
 
-        public IQueryable<RoleDTO> GetRoles()
+        public IQueryable<Role> GetRoles()
         {
-            return _unitOfWork.RoleManager.Roles.ProjectTo<RoleDTO>(_mapper.ConfigurationProvider);
+            return _unitOfWork.RoleManager.Roles.ProjectTo<Role>(_mapper.ConfigurationProvider);
         }
 
         public async Task<OperationDetails> ChangePassword(string userId, string oldPassword, string newPassword)
@@ -80,13 +79,13 @@ namespace BLL.Services
             }
         }
 
-        public async Task<RoleDTO> FindRoleByIdAsync(string id)
+        public async Task<Role> FindRoleByIdAsync(string id)
         {
             var role = await _unitOfWork.RoleManager.FindByIdAsync(id);
-            return _mapper.Map<ApplicationRole, RoleDTO>(role);
+            return _mapper.Map<ApplicationRole, Role>(role);
         }
 
-        public async Task<IQueryable<UserDTO>> GetUsersInRoleAsync(string roleId)
+        public async Task<IQueryable<User>> GetUsersInRoleAsync(string roleId)
         {
             
             var role = await _unitOfWork.RoleManager.FindByIdAsync(roleId);
@@ -96,9 +95,9 @@ namespace BLL.Services
             {
                 return (from user in _unitOfWork.UserManager.Users
                         where user.Roles.Any(r => r.RoleId == roleId)
-                        select user).ProjectTo<UserDTO>(_mapper.ConfigurationProvider);
+                        select user).ProjectTo<User>(_mapper.ConfigurationProvider);
             }
-            return _unitOfWork.UserManager.Users.ProjectTo<UserDTO>(_mapper.ConfigurationProvider);
+            return _unitOfWork.UserManager.Users.ProjectTo<User>(_mapper.ConfigurationProvider);
 
         }
 
@@ -141,12 +140,12 @@ namespace BLL.Services
                     await _unitOfWork.RoleManager.CreateAsync(role);
                 }
             }
-            var userDto = new UserDTO() { Name = "Admin", Password = "111111" };
+            var userDto = new User() { Name = "Admin", Password = "111111" };
 
             ApplicationUser user = await _unitOfWork.UserManager.FindByNameAsync(userDto.Name);
             if (user == null)
             {
-                user = _mapper.Map<UserDTO, ApplicationUser>(userDto);
+                user = _mapper.Map<User, ApplicationUser>(userDto);
                 user.Id = new ApplicationUser().Id;
                 var result = await _unitOfWork.UserManager.CreateAsync(user, userDto.Password);
 

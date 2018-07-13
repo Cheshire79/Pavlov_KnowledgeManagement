@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.AspNet.Identity.EntityFramework;
 
-namespace DAL.Entities
+namespace Identity.DAL.Entities
 {
     public class ApplicationUser : IdentityUser
     {     

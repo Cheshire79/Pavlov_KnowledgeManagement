@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
-using BLL.DTO;
-using BLL.Services.Interfaces;
 using BLL.Validation;
+using Identity.BLL.Data;
+using Identity.BLL.Interface;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using WebUI.Mapper;
@@ -17,10 +17,10 @@ namespace WebUI.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        private IIdentityService _identityService;
+        private IIdentityService<OperationDetails, ClaimsIdentity, User, Role> _identityService;
         private IMapper _mapper;
 
-        public AccountController(IIdentityService identityService, IMapperFactoryWEB mapperFactory)
+        public AccountController(IIdentityService<OperationDetails, ClaimsIdentity, User, Role> identityService, IMapperFactoryWEB mapperFactory)
         {
             _identityService = identityService;
             _mapper = mapperFactory.CreateMapperWEB();
@@ -42,7 +42,7 @@ namespace WebUI.Controllers
           
             if (ModelState.IsValid)
             {
-                UserDTO userDto = _mapper.Map<UserLoginViewModel, UserDTO> (model);
+                User userDto = _mapper.Map<UserLoginViewModel, User> (model);
                 if (await TryToSignInAsync(userDto, model.RememberMe))
                     return RedirectToLocal(returnUrl);
                 ModelState.AddModelError("", "Invalid username or password.");
@@ -50,7 +50,7 @@ namespace WebUI.Controllers
             return View(model);
         }
 
-        private async Task<bool> TryToSignInAsync(UserDTO userDto, bool rememberMe)
+        private async Task<bool> TryToSignInAsync(User userDto, bool rememberMe)
         {
             ClaimsIdentity claim = await _identityService.Authenticate(userDto);
             if (claim == null)
@@ -75,7 +75,7 @@ namespace WebUI.Controllers
             await _identityService.SetInitialData();          
             if (ModelState.IsValid)
             {
-                UserDTO userDto=_mapper.Map<UserRegisterViewModel, UserDTO>(model);
+                User userDto=_mapper.Map<UserRegisterViewModel, User>(model);
                 userDto.RoleByDefault = "user";                
                 OperationDetails operationDetails = await _identityService.Create(userDto);
                 if (operationDetails.Succedeed)

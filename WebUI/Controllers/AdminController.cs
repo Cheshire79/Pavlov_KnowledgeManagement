@@ -3,12 +3,13 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
-using BLL.DTO;
-using BLL.Services.Interfaces;
 using BLL.Validation;
+using Identity.BLL.Data;
+using Identity.BLL.Interface;
 using Microsoft.AspNet.Identity;
 using WebUI.Mapper;
 using WebUI.Models;
@@ -18,11 +19,11 @@ namespace WebUI.Controllers
 {
     public class AdminController : Controller
     {
-        private IIdentityService _identityService;
+        private IIdentityService<OperationDetails, ClaimsIdentity, User, Role> _identityService;
         private IMapper _mapper;
         public int PageSize = 4;
 
-        public AdminController(IIdentityService identityService, IMapperFactoryWEB mapperFactory)
+        public AdminController(IIdentityService<OperationDetails, ClaimsIdentity, User, Role> identityService, IMapperFactoryWEB mapperFactory)
         {
             _identityService = identityService;
             _mapper = mapperFactory.CreateMapperWEB();
@@ -34,7 +35,7 @@ namespace WebUI.Controllers
             UsersViewModel viewModel =
                      new UsersViewModel
                      {
-                         Users = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<UserViewModel>>(await _identityService.GetUsers().
+                         Users = _mapper.Map<IEnumerable<User>, IEnumerable<UserViewModel>>(await _identityService.GetUsers().
                 OrderBy(x => x.Name).Skip((page - 1) * PageSize)
                .Take(PageSize).ToListAsync()),
                          PagingInfo = new PagingInfo
@@ -50,10 +51,10 @@ namespace WebUI.Controllers
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> Roles(string roleId, int page = 1)// todo can be added field for search
         {
-            IQueryable<UserDTO> users = await _identityService.GetUsersInRoleAsync(roleId);
+            IQueryable<User> users = await _identityService.GetUsersInRoleAsync(roleId);
             UsersInRoleViewModel viewModel = new UsersInRoleViewModel
             {
-                Users = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<UserViewModel>>(
+                Users = _mapper.Map<IEnumerable<User>, IEnumerable<UserViewModel>>(
                                         await users.OrderBy(x => x.Name).Skip((page - 1) * PageSize).Take(PageSize).ToListAsync()
                                                ),
                 PagingInfo = new PagingInfo
@@ -75,7 +76,7 @@ namespace WebUI.Controllers
         {
             RolesMenuViewModel rolesMenu = new RolesMenuViewModel()
             {
-                Roles = _mapper.Map<IEnumerable<RoleDTO>, IEnumerable<RoleViewModel>>
+                Roles = _mapper.Map<IEnumerable<Role>, IEnumerable<RoleViewModel>>
                                         (
                                 _identityService.GetRoles().OrderBy(x => x.Name)
                                         ),
@@ -94,7 +95,7 @@ namespace WebUI.Controllers
             var usersInRole = await _identityService.GetUsersInRoleAsync(roleId);
             UsersForAddingIntoRoleViewModel viewModel = new UsersForAddingIntoRoleViewModel
             {
-                Users = _mapper.Map<IEnumerable<UserDTO>, IEnumerable<UserViewModel>>
+                Users = _mapper.Map<IEnumerable<User>, IEnumerable<UserViewModel>>
                                         (
                             await _identityService.GetUsers().Except(usersInRole).OrderBy(x => x.Name)
                             .Skip((page - 1) * PageSize).Take(PageSize).ToListAsync()

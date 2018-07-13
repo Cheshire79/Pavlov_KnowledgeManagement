@@ -1,7 +1,6 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 
-namespace BLL.Mapper
+namespace KnowledgeManagement.BLL.Interface
 {
     public interface IMapperFactory
     {

@@ -1,6 +1,6 @@
 ﻿
 using AutoMapper;
-using BLL.DTO;
+using Identity.BLL.Data;
 using KnowledgeManagement.BLL.DTO;
 using KnowledgeManagement.BLL.SpecifyingSkill.DTO;
 using WebUI.Models.KnowledgeManagement;
@@ -19,14 +19,14 @@ namespace WebUI.Mapper
                 // source , destination
                 // when do i need directly set up mapping ? (because sometime i cam miss and it still works)
                 cfg.CreateMap<SpecifyingSkillForSearchSaveModel, SpecifyingSkillForSearchDTO>();
-                cfg.CreateMap<UserDTO, UserViewModel>();
-                cfg.CreateMap<RoleDTO, RoleViewModel>();
+                cfg.CreateMap<User, UserViewModel>();
+                cfg.CreateMap<Role, RoleViewModel>();
 
-                cfg.CreateMap<UserLoginViewModel, UserDTO>().ForMember(x => x.Name,
+                cfg.CreateMap<UserLoginViewModel, User>().ForMember(x => x.Name,
                     x => x.MapFrom(m=>m.UserName)).ForMember(x => x.Password,
                     x => x.MapFrom(m => m.Password));
 
-                cfg.CreateMap<UserRegisterViewModel, UserDTO>().ForMember(x => x.Name,
+                cfg.CreateMap<UserRegisterViewModel, User>().ForMember(x => x.Name,
                     x => x.MapFrom(m => m.UserName)).ForMember(x => x.Password,
                     x => x.MapFrom(m => m.Password));
                 cfg.CreateMap<SkillDTO, SkillViewModel>();

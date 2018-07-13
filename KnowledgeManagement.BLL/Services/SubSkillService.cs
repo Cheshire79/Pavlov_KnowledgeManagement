@@ -17,7 +17,7 @@ namespace KnowledgeManagement.BLL.Services
         private IUnitOfWork<SubSkill, Skill, Level, KnowledgeManagement.DAL.SpecifyingSkill.Entities.SpecifyingSkill> _unitOfWork;
         private IMapper _mapper;
 
-        public SubSkillService(IUnitOfWork<SubSkill, Skill, Level, DAL.SpecifyingSkill.Entities.SpecifyingSkill> unitOfWork, IMappertFactory mapperFactory)
+        public SubSkillService(IUnitOfWork<SubSkill, Skill, Level, KnowledgeManagement.DAL.SpecifyingSkill.Entities.SpecifyingSkill> unitOfWork, IMapperFactory mapperFactory)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapperFactory.CreateMapper();

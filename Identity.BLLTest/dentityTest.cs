@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using BLL.Mapper;
-using BLL.Services;
-using BLL.Services.Interfaces;
 using BLL.Validation;
-using DAL.Entities;
-using DAL.Interfaces;
-using DAL.Repositories;
+using Identity.BLL.Data;
+using Identity.DAL.Entities;
+using Identity.DAL.Repositories;
+using Identity.BLL.Interface;
+using Identity.BLL.Mapper;
+using Identity.BLL.Services;
+using Identity.DAL.Interface;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Moq;
 using NUnit.Framework;
@@ -23,10 +21,10 @@ namespace Identity.BLLTest
     [TestFixture]
     public class IdentityTest
     {
-        Mock<IIdentityUnitOfWork> _uow;
+        Mock<IIdentityUnitOfWork<ApplicationUserManager, ApplicationRoleManager>> _uow;
         Mock<ApplicationUserManager> _userManager;
         Mock<ApplicationRoleManager> _roleManager;
-        IIdentityService service;
+        IIdentityService<OperationDetails, ClaimsIdentity, User, Role> service;
 
         [SetUp]
         public void SetUp()
@@ -78,7 +76,7 @@ namespace Identity.BLLTest
             _roleManager.As<IQueryable<ApplicationRole>>().Setup(m => m.ElementType).Returns(roles.ElementType);
             _roleManager.As<IQueryable<ApplicationRole>>().Setup(m => m.GetEnumerator()).Returns(roles.GetEnumerator());
 
-            _uow = new Mock<IIdentityUnitOfWork>();
+            _uow = new Mock<IIdentityUnitOfWork<ApplicationUserManager, ApplicationRoleManager>>();
             _uow.Setup(u => u.UserManager).Returns(_userManager.Object);
             _uow.Setup(u => u.RoleManager).Returns(_roleManager.Object);
             //   uow.Setup(u => u.SaveAsync()).Returns(Task.Run(() => { }));
