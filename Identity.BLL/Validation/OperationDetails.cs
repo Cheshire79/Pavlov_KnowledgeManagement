@@ -1,7 +1,5 @@
 ﻿
-using System;
-
-namespace BLL.Validation
+namespace Identity.BLL.Validation
 {
     public class OperationDetails 
     {

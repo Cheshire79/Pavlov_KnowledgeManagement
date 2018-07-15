@@ -79,21 +79,21 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BLL\Identity.BLL.csproj">
-      <Project>{C6A2B2A5-7D5C-46CB-9E05-F1CCB7AA157F}</Project>
-      <Name>Identity.BLL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DAL\Identity.DAL.csproj">
-      <Project>{7A15B9F1-1DA2-4651-BE7B-8E3BCAA0E9C5}</Project>
-      <Name>Identity.DAL</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Identity.BLL.Interface\Identity.BLL.Interface.csproj">
       <Project>{81DF033D-CC80-4805-8DF4-95D9C946228D}</Project>
       <Name>Identity.BLL.Interface</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Identity.BLL\Identity.BLL.csproj">
+      <Project>{c6a2b2a5-7d5c-46cb-9e05-f1ccb7aa157f}</Project>
+      <Name>Identity.BLL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Identity.DAL.Interface\Identity.DAL.Interface.csproj">
       <Project>{A35855E4-0655-4AC9-B1CA-A1C2B833E8DC}</Project>
       <Name>Identity.DAL.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Identity.DAL\Identity.DAL.csproj">
+      <Project>{7a15b9f1-1da2-4651-be7b-8e3bcaa0e9c5}</Project>
+      <Name>Identity.DAL</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

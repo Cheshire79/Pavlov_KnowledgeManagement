@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using BLL.Validation;
+using Identity.BLL.Validation;
 using Identity.BLL.Data;
 using Identity.DAL.Entities;
 using Identity.DAL.Repositories;

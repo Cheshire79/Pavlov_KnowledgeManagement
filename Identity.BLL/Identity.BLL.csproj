@@ -66,7 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Role.cs" />
-    <Compile Include="Data\UserDTO.cs" />
+    <Compile Include="Data\User.cs" />
     <Compile Include="Validation\OperationDetails.cs" />
     <Compile Include="Mapper\MapperFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -74,7 +74,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\DAL\Identity.DAL.csproj">
+    <ProjectReference Include="..\Identity.DAL\Identity.DAL.csproj">
       <Project>{7a15b9f1-1da2-4651-be7b-8e3bcaa0e9c5}</Project>
       <Name>Identity.DAL</Name>
     </ProjectReference>
