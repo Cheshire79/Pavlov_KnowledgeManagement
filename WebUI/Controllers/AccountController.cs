@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
-using Identity.BLL.Data;
 using Identity.BLL.Interface;
-using Identity.BLL.Validation;
+using Identity.BLL.Interface.Data;
+using Identity.BLL.Interface.Data.Validation;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using WebUI.Mapper;
@@ -17,10 +17,10 @@ namespace WebUI.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        private IIdentityService<OperationDetails, ClaimsIdentity, User, Role> _identityService;
+        private IIdentityService _identityService;
         private IMapper _mapper;
 
-        public AccountController(IIdentityService<OperationDetails, ClaimsIdentity, User, Role> identityService, IMapperFactoryWEB mapperFactory)
+        public AccountController(IIdentityService identityService, IMapperFactoryWEB mapperFactory)
         {
             _identityService = identityService;
             _mapper = mapperFactory.CreateMapperWEB();

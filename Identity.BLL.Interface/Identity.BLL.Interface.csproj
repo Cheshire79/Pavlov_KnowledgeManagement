@@ -44,6 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Role.cs" />
+    <Compile Include="Data\User.cs" />
+    <Compile Include="Data\Validation\OperationDetails.cs" />
     <Compile Include="IIdentityService.cs" />
     <Compile Include="IMapperFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

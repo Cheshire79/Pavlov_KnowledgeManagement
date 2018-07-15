@@ -2,13 +2,12 @@
 using System.Security.Claims;
 using System.Web.Mvc;
 using System.Web.Routing;
-using Identity.BLL.Data;
+using Identity.BLL.Interface;
 using Identity.DAL.EF;
 using Identity.DAL.Infrastructure;
 using Identity.DAL.Repositories;
-using Identity.BLL.Interface;
+using Identity.BLL.Interface.Data;
 using Identity.BLL.Services;
-using Identity.BLL.Validation;
 using Identity.DAL.Interface;
 using KnowledgeManagement.BLL.DTO;
 using KnowledgeManagement.BLL.Interface;
@@ -48,7 +47,7 @@ namespace WebUI.Infrastructure
         private void AddBindings()
         {
             AddBindingsForIdentityDAL();
-            AddBindingsForIdentityBll();
+            AddBindingsForIdentityBLL();
             AddBindingsForKnowledgeManagementDAL();
             AddBindingsForKnowledgeManagementBLL();
             _ninjectKernel.Bind<IMapperFactoryWEB>().To<MapperFactoryWEB>().InSingletonScope();
@@ -84,9 +83,9 @@ namespace WebUI.Infrastructure
                 .To<FactoryEntitiesManager>();
         }
 
-        private void AddBindingsForIdentityBll()
+        private void AddBindingsForIdentityBLL()
         {
-            _ninjectKernel.Bind<IIdentityService<OperationDetails, ClaimsIdentity, User, Role>>().To<IdentityService>();
+            _ninjectKernel.Bind<IIdentityService>().To<IdentityService>();
             _ninjectKernel.Bind<Identity.BLL.Interface.IMapperFactory>().To<Identity.BLL.Mapper.MapperFactory>().InSingletonScope();
         }
     }

@@ -1,6 +1,6 @@
 ﻿
 using AutoMapper;
-using Identity.BLL.Data;
+using Identity.BLL.Interface.Data;
 using KnowledgeManagement.BLL.DTO;
 using KnowledgeManagement.BLL.SpecifyingSkill.DTO;
 using WebUI.Models.KnowledgeManagement;

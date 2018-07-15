@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using Identity.BLL.Validation;
-using Identity.BLL.Data;
+using Identity.BLL.Interface;
 using Identity.DAL.Entities;
 using Identity.DAL.Repositories;
-using Identity.BLL.Interface;
+using Identity.BLL.Interface.Data.Validation;
 using Identity.BLL.Mapper;
 using Identity.BLL.Services;
 using Identity.DAL.Interface;
@@ -24,7 +22,7 @@ namespace Identity.BLLTest
         Mock<IIdentityUnitOfWork<ApplicationUserManager, ApplicationRoleManager>> _uow;
         Mock<ApplicationUserManager> _userManager;
         Mock<ApplicationRoleManager> _roleManager;
-        IIdentityService<OperationDetails, ClaimsIdentity, User, Role> service;
+        IIdentityService service;
 
         [SetUp]
         public void SetUp()

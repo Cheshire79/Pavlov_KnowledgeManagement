@@ -1,21 +1,24 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Identity.BLL.Interface.Data;
+using Identity.BLL.Interface.Data.Validation;
 
 namespace Identity.BLL.Interface
 {
-    public interface IIdentityService<TOperationDetails, TClaimsIdentity, TUserDTO, TRoleDTO> : IDisposable where TOperationDetails : class where TClaimsIdentity : class  where TRoleDTO : class where TUserDTO : class 
+    public interface IIdentityService : IDisposable
     {
-        Task<TOperationDetails> Create(TUserDTO userDto);
-        Task<TClaimsIdentity> Authenticate(TUserDTO userDto);
-        IQueryable<TUserDTO> GetUsers();
-        IQueryable<TRoleDTO> GetRoles();
-        Task<TRoleDTO> FindRoleByIdAsync(string id);
-        Task<IQueryable<TUserDTO>> GetUsersInRoleAsync(string roleId);
-        Task<TOperationDetails> AddUserToRoleAsync(string userId, string roleId);
-        Task<TOperationDetails> RemoveUserFromRole(string currentUserId, string userId, string roleId);
-        Task<TOperationDetails> DeleteUser(string currentUserId, string userId);
-        Task<TOperationDetails> ChangePassword(string userId, string oldPassword, string newPassword);
+        Task<OperationDetails> Create(User userDto);
+        Task<ClaimsIdentity> Authenticate(User user);
+        IQueryable<User> GetUsers();
+        IQueryable<Role> GetRoles();
+        Task<Role> FindRoleByIdAsync(string id);
+        Task<IQueryable<User>> GetUsersInRoleAsync(string roleId);
+        Task<OperationDetails> AddUserToRoleAsync(string userId, string roleId);
+        Task<OperationDetails> RemoveUserFromRole(string currentUserId, string userId, string roleId);
+        Task<OperationDetails> DeleteUser(string currentUserId, string userId);
+        Task<OperationDetails> ChangePassword(string userId, string oldPassword, string newPassword);
         Task SetInitialData();
     }
 }

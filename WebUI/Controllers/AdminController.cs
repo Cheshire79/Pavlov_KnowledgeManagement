@@ -7,9 +7,9 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
-using Identity.BLL.Data;
 using Identity.BLL.Interface;
-using Identity.BLL.Validation;
+using Identity.BLL.Interface.Data;
+using Identity.BLL.Interface.Data.Validation;
 using Microsoft.AspNet.Identity;
 using WebUI.Mapper;
 using WebUI.Models;
@@ -19,11 +19,11 @@ namespace WebUI.Controllers
 {
     public class AdminController : Controller
     {
-        private IIdentityService<OperationDetails, ClaimsIdentity, User, Role> _identityService;
+        private IIdentityService _identityService;
         private IMapper _mapper;
         public int PageSize = 4;
 
-        public AdminController(IIdentityService<OperationDetails, ClaimsIdentity, User, Role> identityService, IMapperFactoryWEB mapperFactory)
+        public AdminController(IIdentityService identityService, IMapperFactoryWEB mapperFactory)
         {
             _identityService = identityService;
             _mapper = mapperFactory.CreateMapperWEB();
@@ -116,7 +116,6 @@ namespace WebUI.Controllers
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> AddUsersForRole(string roleId, string userId, string returnUrl, FormCollection collection)
         {
-
             OperationDetails operationDetails = await _identityService.AddUserToRoleAsync(userId, roleId);
             if (operationDetails.Succedeed)
             {

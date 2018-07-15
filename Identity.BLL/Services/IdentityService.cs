@@ -5,9 +5,9 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Identity.BLL.Data;
 using Identity.BLL.Interface;
-using Identity.BLL.Validation;
+using Identity.BLL.Interface.Data;
+using Identity.BLL.Interface.Data.Validation;
 using Identity.DAL.Entities;
 using Identity.DAL.Interface;
 using Identity.DAL.Repositories;
@@ -15,7 +15,7 @@ using Microsoft.AspNet.Identity;
 
 namespace Identity.BLL.Services
 {
-    public class IdentityService : IIdentityService<OperationDetails, ClaimsIdentity, User, Role>
+    public class IdentityService : IIdentityService
     {
         private string adminRoleName = "admin";
         private IIdentityUnitOfWork<ApplicationUserManager, ApplicationRoleManager> _unitOfWork { get; set; }

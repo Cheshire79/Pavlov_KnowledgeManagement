@@ -1,5 +1,5 @@
 ﻿
-namespace Identity.BLL.Data
+namespace Identity.BLL.Interface.Data
 {
    public class Role
     {
